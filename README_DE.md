@@ -1,25 +1,28 @@
 # Enemy: Tempest Reborn
 
-Dieses Repository bündelt die aktuelle AROS/UAE-Kompatibilitätsarbeit für
-Enemy: Tempest Reborn. Enthalten sind die für dieses Projekt bereitgestellten
-originalen Enemy ADFs, die verwendeten AROS-ROMs, reproduzierbare
-ADF-Patch-Skripte, gepatchte Enemy-ADF-Varianten, FS-UAE-Konfigurationen und
-Beleg-Screenshots/Manifeste.
+Dieses Repository buendelt die aktuelle AROS/UAE-Kompatibilitaetsarbeit fuer
+Enemy: Tempest Reborn. Enthalten sind die fuer dieses Projekt bereitgestellten
+originalen Enemy-ADFs, die verwendeten AROS-ROMs, reproduzierbare
+ADF-Patch-Skripte, vorbereitete gepatchte Enemy-ADF-Varianten,
+FS-UAE-Konfigurationen und der erste hostseitige Flutter-Launcher.
 
 ## Aktueller Stand
 
-- Enemy V2 startet unter AROS, wenn als A1200 mit 2 MB Chip RAM ausgeführt.
+- Enemy V2 startet unter AROS, wenn als A1200 mit 2 MB Chip RAM und 2 MB Fast
+  RAM ausgefuehrt.
 - Der sauberste getestete Pfad nutzt eine Enemy-ADF-Variante, in der der Helper
-  `c/closewb` seine Vorbereitung und Stack-Bereinigung beibehält, aber den
+  `c/closewb` seine Vorbereitung und Stack-Bereinigung beibehaelt, aber den
   einzelnen `CloseWindow()`-Aufruf durch zwei 68k-NOP-Instruktionen ersetzt.
-- Mit diesem `closewb`-NOP-Patch lässt sich die Intro per Maus/Feuer abbrechen,
+- Mit diesem `closewb`-NOP-Patch laesst sich die Intro per Maus/Feuer abbrechen,
   und das Hauptmenü rendert korrekt.
-- Ohne NOP auf AROS A1200/2 MB erreicht das Spiel Enemy-Videomodi, zeigte im
-  manuellen Test aber fehlende Grafiken.
-- Auf AROS-A500-nahen Konfigurationen kann `ef/enemy` mit der irreführenden
-  Shell-Meldung `file is not executable` abbrechen. Die statische Hunk-Prüfung
-  zeigt aber ein gültiges AmigaOS-LoadSeg-Executable; die Ursache wirkt daher
-  eher wie Umgebung/Ressourcen.
+- Enemy 1 ist in getrennte Startziele fuer Spiel und Intro aufgeteilt. Das
+  Spielziel ueberspringt das Intro; das Intro-Ziel kehrt nach Eingabe/Ende zum
+  Host-Launcher zurueck.
+- Enemy 1/2 DE/EN nutzen vorbereitete Level-Unlock-Images: Im Menue steht
+  weiter Level 1, die hoechste Levelauswahl ist aber ohne Passwort freigeschaltet.
+- Der Launcher startet standardmaessig im Fullscreen. Fensteraufloesungen und
+  2x/3x/4x-Pruefungen bleiben als Debug-/Messpfad erhalten, sind aber nicht der
+  normale Spielerpfad.
 
 Siehe:
 
@@ -30,20 +33,43 @@ Siehe:
 
 ## Schnelltest
 
-FS-UAE mit folgender Konfiguration starten:
+Host-Launcher unter Linux starten:
 
-```text
-configs/fs-uae/enemy1_arosclosewbnopdiag_a1200.fs-uae
+```bash
+cd launcher
+flutter run -d linux
 ```
 
-Diese Konfiguration nutzt:
+Oder ein Profil direkt mit FS-UAE starten:
 
 ```text
-media/enemy-adfs/patched/ENEMY1_V2_DE_A.closewb-nop-diag.adf
-media/enemy-adfs/original/ENEMY1_V2_DE_B.adf
-roms/aros/aros-rom.bin
-roms/aros/aros-ext.bin
+configs/fs-uae/tempestreborn_enemy1_de_a1200.fs-uae
 ```
 
-Die kopierten FS-UAE-Konfigurationen enthalten noch absolute Pfade aus dem
-Analyse-Workspace und muessen nach dem Klonen ggf. angepasst werden.
+Die Tempest-Reborn-Konfigurationen nutzen relative Pfade ab Repository-Wurzel.
+Der Launcher schreibt Runtime-Konfigurationen nach `work/launcher-runtime/` und
+setzt die gewaehlten Anzeige-/Aspect-/Filter-/Steuerungsoptionen vor dem
+FS-UAE-Start.
+
+Aktuelle Launcher-Einstellungen:
+
+- `Anzeige`: `Fullscreen` oder `Window`
+- `Aspect`: `4:3`, `Pixel` oder `Stretch`
+- `Pixel`: `Sharp`, `Smooth` oder `CRT`
+- `Steuerung`: `Keyboard`, `Gamepad` oder `Joystick`
+
+Das Launcher-Menue ist zweisprachig. Bei Umschaltung auf Englisch wechseln auch
+die Menue-Texte.
+
+## Verifikation
+
+Aktuelle lokale Pruefungen:
+
+```bash
+cd launcher
+flutter analyze
+flutter test
+flutter build linux
+```
+
+Alle drei Pruefungen waren am 2026-06-30 erfolgreich.

@@ -1,0 +1,41 @@
+[fs-uae]
+amiga_model = A1200
+kickstart_file = roms/aros/aros-rom.bin
+kickstart_ext_file = roms/aros/aros-ext.bin
+
+floppy_drive_0 = work/kickstart-deps/patches/level-unlock/ENEMY2_V2_DE_A.closewb-nop.level-unlock.adf
+floppy_drive_1 = assets/adf/ENEMY2_V2_DE_B.adf
+
+chip_memory = 2048
+slow_memory = 0
+fast_memory = 2048
+floppy_drive_speed = 0
+floppy_drive_volume = 0
+floppy_drive_volume_empty = 0
+floppy_drive_0_sounds = off
+floppy_drive_1_sounds = off
+writable_floppy_images = 0
+
+joystick_port_0 = mouse
+joystick_port_0_mode = mouse
+joystick_port_1 = keyboard
+joystick_port_1_mode = joystick
+joystick_port_1_autofire = 0
+automatic_input_grab = 1
+initial_input_grab = 1
+keyboard_input_grab = 1
+full_keyboard = 0
+
+fullscreen = 1
+video_sync = 0
+cursor = auto
+
+screenshots_output_dir = output/screenshots
+screenshots_output_prefix = tempestreborn_enemy2_de_a1200_
+state_dir = output/states
+logs_dir = output/logs
+save_state_compression = 0
+
+uaelogfile = output/logs/tempestreborn_enemy2_de_a1200.log
+log_disk = 1
+log_a = 1

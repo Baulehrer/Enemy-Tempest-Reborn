@@ -1,0 +1,12 @@
+patch=enemy1-intro-only
+language=de
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/closewb-nop-all/ENEMY1_V2_DE_A.closewb-nop.adf
+source_sha256=a685d1c2d3f24ba70a96ed02f7e6385e463e3acf9d285de3e39d68f24597ea75
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/enemy1-boot-split/ENEMY1_V2_DE_A.intro-only.adf
+patched_sha256=036864cfc7eb690a0ffb2344281dd03f4c0f5401a12ff1bde6b6c7298c4a35a2
+startup_offset=0x06e618
+checksum_block_offset=0x06e600
+old_checksum=0x5ae9f86f
+new_checksum=0x848da693
+original_startup=b'ENEMY_A:enif/enintro  >nil:\nENEMY_A:c/closewb\nENEMY_A:ef/enemy >nil:\n'
+patched_startup=b'ENEMY_A:enif/enintro\nendcli\n'

@@ -1,0 +1,16 @@
+patch=level-unlock-show-level-1
+target=enemy2_en
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/closewb-nop-all/ENEMY2_V2_EN_A.closewb-nop.adf
+source_sha256=3c1084ca86328ad7a04000d5e59963a475eb600ba8361d308f0d232bf2b2c70b
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/level-unlock/ENEMY2_V2_EN_A.closewb-nop.level-unlock.adf
+patched_sha256=5a9db109a2bf96c6abbda46e3a8bd9046f3354ed4e0f841be20d1b084f35626b
+default_offsets=0x08971e
+default_original=0840000033c00000
+default_patched=70014e7133c00000
+cap_offsets=0x01e582,0x0bd582
+cap_original=6700000a13fc0022
+cap_patched=4e714e7113fc001d
+checksum_block=0x01e400 old=0x2b24fbde new=0xdcc3146d
+checksum_block=0x089600 old=0x2a6f1a9f new=0xdbfdb2de
+checksum_block=0x0bd400 old=0x2b24f8ce new=0xdcc3115d
+runtime_effect=show level 1 while allowing highest level selection through normal level control

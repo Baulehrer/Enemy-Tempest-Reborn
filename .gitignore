@@ -2,4 +2,12 @@ output/
 *.uae
 *.sdf
 __pycache__/
-
+.dart_tool/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+launcher/.dart_tool/
+launcher/build/
+launcher/.idea/
+launcher/android/.gradle/
+launcher/android/app/build/

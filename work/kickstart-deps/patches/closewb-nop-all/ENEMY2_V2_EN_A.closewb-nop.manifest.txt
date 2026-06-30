@@ -1,0 +1,13 @@
+patch=closewb-nop
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/assets/adf/ENEMY2_V2_EN_A.adf
+source_sha256=6c6a5bad08dbd6672689627f4461890fefa08eb5a3bf45edb5fc30d22625f4bc
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/closewb-nop-all/ENEMY2_V2_EN_A.closewb-nop.adf
+patched_sha256=3c1084ca86328ad7a04000d5e59963a475eb600ba8361d308f0d232bf2b2c70b
+signature_offset=0x053042
+checksum_block_offset=0x053000
+old_checksum=0x3756ae9a
+new_checksum=0x379f6741
+patch_offset=0x053068
+original_bytes=4eba0718
+patched_bytes=4e714e71
+runtime_effect=JSR CloseWindow -> NOP; NOP in c/closewb

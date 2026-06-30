@@ -2,22 +2,25 @@
 
 This repository packages the current Enemy: Tempest Reborn AROS/UAE
 compatibility work. It contains the original Enemy ADFs provided for this
-project, AROS ROMs used for testing, reproducible ADF patch scripts, patched
-Enemy ADF variants, FS-UAE configs, and evidence screenshots/manifests.
+project, the AROS ROMs used for testing, reproducible ADF patch scripts,
+prepared patched Enemy ADF variants, FS-UAE configs, and the first host-side
+Flutter launcher.
 
 ## Current Result
 
-- Enemy V2 starts on AROS when run as an A1200 with 2 MB Chip RAM.
+- Enemy V2 starts on AROS when run as an A1200 with 2 MB Chip RAM and 2 MB
+  Fast RAM.
 - The cleanest tested path uses an Enemy ADF variant where the `c/closewb`
   helper keeps its setup/stack cleanup but replaces the single `CloseWindow()`
   call with two 68k NOP instructions.
 - With that `closewb` NOP patch, the intro can be skipped by mouse/fire and the
   main menu renders correctly.
-- Without that NOP on AROS A1200/2 MB, the game reaches Enemy video modes but
-  showed missing graphics during manual testing.
-- On AROS A500-class configs, `ef/enemy` can fail with the misleading shell
-  message `file is not executable`; static Hunk parsing indicates the file is a
-  valid AmigaOS LoadSeg executable, so this appears environment/resource related.
+- Enemy 1 is split into separate game and intro launch targets. The game target
+  skips the intro; the intro target exits back to the host launcher.
+- Enemy 1/2 DE/EN use prepared level-unlock images: the menu still displays
+  level 1, but the highest level is unlocked without password entry.
+- The launcher defaults to fullscreen. Window sizing and 2x/3x/4x checks are
+  retained as debug/measurement paths, not as the main player-facing flow.
 
 See:
 
@@ -28,23 +31,44 @@ See:
 
 ## Quick Test
 
-Use FS-UAE with:
+Run the host launcher on Linux:
 
-```text
-configs/fs-uae/enemy1_arosclosewbnopdiag_a1200.fs-uae
+```bash
+cd launcher
+flutter run -d linux
 ```
 
-That config points at:
+Or start a profile directly with FS-UAE:
 
 ```text
-media/enemy-adfs/patched/ENEMY1_V2_DE_A.closewb-nop-diag.adf
-media/enemy-adfs/original/ENEMY1_V2_DE_B.adf
-roms/aros/aros-rom.bin
-roms/aros/aros-ext.bin
+configs/fs-uae/tempestreborn_enemy1_de_a1200.fs-uae
 ```
 
-The paths inside the copied FS-UAE configs may need adjustment after cloning,
-because the original workspace used absolute local paths.
+The Tempest Reborn configs use paths relative to the repository root. The
+launcher writes runtime configs to `work/launcher-runtime/` and applies the
+selected display/aspect/filter/control options before starting FS-UAE.
+
+Launcher settings currently include:
+
+- `Display`: `Fullscreen` or `Window`
+- `Aspect`: `4:3`, `Pixel`, or `Stretch`
+- `Pixels`: `Sharp`, `Smooth`, or `CRT`
+- `Control`: `Keyboard`, `Gamepad`, or `Joystick`
+
+The launcher UI is bilingual. Switching to English also switches the menu text.
+
+## Verification
+
+Current local checks:
+
+```bash
+cd launcher
+flutter analyze
+flutter test
+flutter build linux
+```
+
+All three passed on 2026-06-30.
 
 ## Repository Name Note
 

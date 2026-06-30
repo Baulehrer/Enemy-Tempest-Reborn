@@ -1,0 +1,5 @@
+patch_set=level-unlock-show-level-1
+ENEMY1_V2_DE_A.game-nointro.level-unlock.adf=00bd8ef151247db37ff7316ff465c3626673bbeacee25827d3aaadbce9388760
+ENEMY1_V2_EN_A.game-nointro.level-unlock.adf=6d12932e445b827ce9275a6ede903d833dd84b6e82609f88104687d113999a2b
+ENEMY2_V2_DE_A.closewb-nop.level-unlock.adf=c47c81cb69fb55dc680bcb5ccaa4793412d92429c0a96f16f626e98026e2e925
+ENEMY2_V2_EN_A.closewb-nop.level-unlock.adf=5a9db109a2bf96c6abbda46e3a8bd9046f3354ed4e0f841be20d1b084f35626b
