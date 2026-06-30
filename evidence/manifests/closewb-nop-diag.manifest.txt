@@ -1,0 +1,11 @@
+patch=enemy1-closewb-nop-diag
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/closewb-nop/ENEMY1_V2_DE_A.closewb-nop.adf
+source_sha256=a685d1c2d3f24ba70a96ed02f7e6385e463e3acf9d285de3e39d68f24597ea75
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/closewb-nop-diag/ENEMY1_V2_DE_A.closewb-nop-diag.adf
+patched_sha256=91f052a2105d962dcb62e8931792b85755f644782b3514dc6485c771e5b3de3f
+patched_config=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/configs/fs-uae/enemy1_arosclosewbnopdiag_a500.fs-uae
+startup_offset=0x06e618
+checksum_block_offset=0x06e600
+old_checksum=0x5ae9f86f
+new_checksum=0x7051127e
+runtime_effect=show enintro/enemy output and `why` results in AROS shell

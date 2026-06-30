@@ -1,0 +1,14 @@
+patch=enemy1-closewb-skip
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/assets/adf/ENEMY1_V2_DE_A.adf
+source_sha256=f8a970e7225541c34d2322875df8294a73604afbab679d0ecb002a5ac01cc28e
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/work/kickstart-deps/patches/closewb-skip/ENEMY1_V2_DE_A.closewb-skip.adf
+patched_sha256=282a33d92b3a2b6f0807023930b436f2d61af34e3cdcd9a4ea00d2294e7931e2
+patched_config=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/configs/fs-uae/enemy1_arosclosewbskip_a500.fs-uae
+signature_offset=0x053042
+checksum_block_offset=0x053000
+old_checksum=0x3756ae9a
+new_checksum=0x3756b59a
+patch_offset=0x05305e
+original_bytes=670e
+patched_bytes=600e
+runtime_effect=0006C436 BEQ.B 0006C446 -> BRA.B 0006C446

@@ -1,0 +1,5 @@
+output/
+*.uae
+*.sdf
+__pycache__/
+
