@@ -1,4 +1,4 @@
-# Plan: Enemy mit AROS-Kickstart-Ersatz
+# Enemy: Tempest Reborn AROS-Kickstart-Plan
 
 ## Ziel
 

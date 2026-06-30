@@ -1,9 +1,10 @@
-# Enemy - Port (AROS/UAE)
+# Enemy: Tempest Reborn
 
-Dieses Repository bündelt die aktuelle Enemy/AROS-Kompatibilitätsanalyse für
-FS-UAE. Enthalten sind die für dieses Projekt bereitgestellten originalen Enemy
-ADFs, die verwendeten AROS-ROMs, reproduzierbare ADF-Patch-Skripte, gepatchte
-Enemy-ADF-Varianten, FS-UAE-Konfigurationen und Beleg-Screenshots/Manifeste.
+Dieses Repository bündelt die aktuelle AROS/UAE-Kompatibilitätsarbeit für
+Enemy: Tempest Reborn. Enthalten sind die für dieses Projekt bereitgestellten
+originalen Enemy ADFs, die verwendeten AROS-ROMs, reproduzierbare
+ADF-Patch-Skripte, gepatchte Enemy-ADF-Varianten, FS-UAE-Konfigurationen und
+Beleg-Screenshots/Manifeste.
 
 ## Aktueller Stand
 
@@ -46,4 +47,3 @@ roms/aros/aros-ext.bin
 
 Die kopierten FS-UAE-Konfigurationen enthalten noch absolute Pfade aus dem
 Analyse-Workspace und muessen nach dem Klonen ggf. angepasst werden.
-

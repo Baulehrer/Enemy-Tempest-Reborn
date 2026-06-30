@@ -1,9 +1,9 @@
-# Enemy - Port (AROS/UAE)
+# Enemy: Tempest Reborn
 
-This repository packages the current Enemy/AROS compatibility investigation for
-FS-UAE. It contains the original Enemy ADFs provided for this project, AROS ROMs
-used for testing, reproducible ADF patch scripts, patched Enemy ADF variants,
-FS-UAE configs, and evidence screenshots/manifests.
+This repository packages the current Enemy: Tempest Reborn AROS/UAE
+compatibility work. It contains the original Enemy ADFs provided for this
+project, AROS ROMs used for testing, reproducible ADF patch scripts, patched
+Enemy ADF variants, FS-UAE configs, and evidence screenshots/manifests.
 
 ## Current Result
 
@@ -48,7 +48,6 @@ because the original workspace used absolute local paths.
 
 ## Repository Name Note
 
-The requested display name was `Enemy - Port (Aros/uae)`. GitHub repository
-names cannot contain `/`, so the technical repository name is intended to be
-`Enemy-Port-Aros-UAE`.
-
+The project display name is `Enemy: Tempest Reborn`. GitHub repository names
+cannot contain `:`, so the technical repository name is intended to be
+`Enemy-Tempest-Reborn`.
