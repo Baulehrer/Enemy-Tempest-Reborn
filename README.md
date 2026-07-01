@@ -19,8 +19,11 @@ Flutter launcher.
   skips the intro; the intro target exits back to the host launcher.
 - Enemy 1/2 DE/EN use prepared level-unlock images: the menu still displays
   level 1, but the highest level is unlocked without password entry.
-- The launcher defaults to fullscreen. Window sizing and 2x/3x/4x checks are
-  retained as debug/measurement paths, not as the main player-facing flow.
+- The launcher defaults to fullscreen and FS-UAE `zoom = auto`, so the normal
+  player path starts full-screen with automatic Amiga viewport cropping.
+- The `v0.2.0-preview1` Linux package includes an unmodified FS-UAE 3.2.35
+  binary plus its runtime data. Users do not need a separate system FS-UAE for
+  that package.
 
 See:
 
@@ -31,6 +34,7 @@ See:
 - `docs/ROADMAP_v0.2.0.md`
 - `docs/FS_UAE_BUNDLING_STRATEGY.md`
 - `docs/BUNDLED_FS_UAE_DEV_PACKAGE_TEST.md`
+- `docs/RELEASE_v0.2.0-preview1.md`
 - `LICENSES.md`
 
 ## Quick Test
@@ -42,6 +46,12 @@ cd launcher
 flutter run -d linux
 ```
 
+For the packaged preview release, extract the Linux archive and run:
+
+```bash
+./run-linux.sh
+```
+
 Or start a profile directly with FS-UAE:
 
 ```text
@@ -51,10 +61,9 @@ configs/fs-uae/tempestreborn_enemy1_de_a1200.fs-uae
 The Tempest Reborn configs use paths relative to the repository root. The
 launcher writes runtime configs to `work/launcher-runtime/` and applies the
 selected display/aspect/filter/control options before starting FS-UAE.
-Before starting, it checks `fs-uae`, the selected base profile, the AROS ROMs,
-and the required Enemy disk images. Missing runtime files are reported in the
-launcher status area.
-For the next package line, the launcher is prepared to prefer a bundled
+Before starting, it checks the bundled or system `fs-uae`, the selected base
+profile, the AROS ROMs, and the required Enemy disk images. Missing runtime
+files are reported in the launcher status area. The launcher prefers a bundled
 `bin/fs-uae/fs-uae` binary before falling back to system `fs-uae`.
 
 Launcher settings currently include:

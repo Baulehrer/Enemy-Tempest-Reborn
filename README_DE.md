@@ -20,9 +20,11 @@ FS-UAE-Konfigurationen und der erste hostseitige Flutter-Launcher.
   Host-Launcher zurueck.
 - Enemy 1/2 DE/EN nutzen vorbereitete Level-Unlock-Images: Im Menue steht
   weiter Level 1, die hoechste Levelauswahl ist aber ohne Passwort freigeschaltet.
-- Der Launcher startet standardmaessig im Fullscreen. Fensteraufloesungen und
-  2x/3x/4x-Pruefungen bleiben als Debug-/Messpfad erhalten, sind aber nicht der
-  normale Spielerpfad.
+- Der Launcher startet standardmaessig im Fullscreen und mit FS-UAE
+  `zoom = auto`, also mit automatischem Amiga-Viewport-Cropping.
+- Das Linux-Paket `v0.2.0-preview1` enthaelt ein unveraendertes FS-UAE 3.2.35
+  samt Runtime-Daten. Fuer dieses Paket muss FS-UAE nicht separat im System
+  installiert sein.
 
 Siehe:
 
@@ -33,6 +35,7 @@ Siehe:
 - `docs/ROADMAP_v0.2.0.md`
 - `docs/FS_UAE_BUNDLING_STRATEGY.md`
 - `docs/BUNDLED_FS_UAE_DEV_PACKAGE_TEST.md`
+- `docs/RELEASE_v0.2.0-preview1.md`
 - `LICENSES.md`
 
 ## Schnelltest
@@ -42,6 +45,12 @@ Host-Launcher unter Linux starten:
 ```bash
 cd launcher
 flutter run -d linux
+```
+
+Beim gepackten Preview-Release das Linux-Archiv entpacken und starten:
+
+```bash
+./run-linux.sh
 ```
 
 Oder ein Profil direkt mit FS-UAE starten:
@@ -54,12 +63,11 @@ Die Tempest-Reborn-Konfigurationen nutzen relative Pfade ab Repository-Wurzel.
 Der Launcher schreibt Runtime-Konfigurationen nach `work/launcher-runtime/` und
 setzt die gewaehlten Anzeige-/Aspect-/Filter-/Steuerungsoptionen vor dem
 FS-UAE-Start.
-Vor dem Start prueft der Launcher `fs-uae`, das gewaehlte Basisprofil, die
-AROS-ROMs und die benoetigten Enemy-Diskettenimages. Fehlende Laufzeitdateien
-werden im Statusbereich des Launchers gemeldet.
-Fuer die naechste Paketlinie ist der Launcher darauf vorbereitet, ein
-mitgeliefertes `bin/fs-uae/fs-uae` bevorzugt zu verwenden und nur sonst auf das
-systemweite `fs-uae` zurueckzufallen.
+Vor dem Start prueft der Launcher das mitgelieferte oder systemweite `fs-uae`,
+das gewaehlte Basisprofil, die AROS-ROMs und die benoetigten Enemy-
+Diskettenimages. Fehlende Laufzeitdateien werden im Statusbereich des Launchers
+gemeldet. Der Launcher bevorzugt ein mitgeliefertes `bin/fs-uae/fs-uae` und
+faellt nur sonst auf das systemweite `fs-uae` zurueck.
 
 Aktuelle Launcher-Einstellungen:
 
