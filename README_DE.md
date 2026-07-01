@@ -22,7 +22,7 @@ FS-UAE-Konfigurationen und der erste hostseitige Flutter-Launcher.
   weiter Level 1, die hoechste Levelauswahl ist aber ohne Passwort freigeschaltet.
 - Der Launcher startet standardmaessig im Fullscreen und mit FS-UAE
   `zoom = auto`, also mit automatischem Amiga-Viewport-Cropping.
-- Das Linux-Paket `v0.2.0-preview1` enthaelt ein unveraendertes FS-UAE 3.2.35
+- Das Linux-Paket `v0.2.0-preview2` enthaelt ein unveraendertes FS-UAE 3.2.35
   samt Runtime-Daten. Fuer dieses Paket muss FS-UAE nicht separat im System
   installiert sein.
 
@@ -36,6 +36,7 @@ Siehe:
 - `docs/FS_UAE_BUNDLING_STRATEGY.md`
 - `docs/BUNDLED_FS_UAE_DEV_PACKAGE_TEST.md`
 - `docs/RELEASE_v0.2.0-preview1.md`
+- `docs/RELEASE_v0.2.0-preview2.md`
 - `LICENSES.md`
 
 ## Schnelltest

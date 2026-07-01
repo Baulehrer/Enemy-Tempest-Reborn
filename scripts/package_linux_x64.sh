@@ -79,7 +79,10 @@ Otherwise fs-uae must be installed and available in PATH.
 EOF
 
 tar -C "$OUT_DIR" -czf "$ARCHIVE" "$PKG"
-sha256sum "$ARCHIVE" >"$SUM"
+(
+  cd "$OUT_DIR"
+  sha256sum "$(basename "$ARCHIVE")" >"$(basename "$SUM")"
+)
 
 printf '%s\n' "$ARCHIVE"
 printf '%s\n' "$SUM"
