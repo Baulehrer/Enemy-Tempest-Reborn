@@ -112,8 +112,70 @@ path:
 - AROS ROMs and Enemy ADFs resolve from the clone
 - Enemy 1 DE reaches the main menu from the clean clone
 
+## Full Profile Matrix
+
+Date: 2026-07-01
+
+The full six-profile matrix was run from the same clean clone:
+
+```bash
+GAME_DURATION=45 INTRO_DURATION=35 GAME_SHOTS='20 40' INTRO_SHOTS='20 30' \
+INTRO_INPUT_AT=24 FS_UAE_BIN=fs-uae \
+  scripts/smoke_tempestreborn_profiles.sh all
+```
+
+Run directory:
+
+```text
+/tmp/enemy-tempest-reborn-clean.z0IFBB/work/launcher-smoke/20260701T085847+0200
+```
+
+Summary:
+
+```text
+enemy1-de  timeout_terminated
+enemy1-en  timeout_terminated
+enemy2-de  timeout_terminated
+enemy2-en  timeout_terminated
+intro-de   exited
+intro-en   exited
+```
+
+The `timeout_terminated` result is expected for game profiles because the smoke
+script stops the emulator after the configured observation window. The intro
+profiles exited after the scripted input signal.
+
+Visual results:
+
+| Profile | Result | Evidence |
+| --- | --- | --- |
+| `enemy1-de` | Enemy 1 German main menu reached | `evidence/screenshots/clean-clone-enemy1-de-menu.png` |
+| `enemy1-en` | Enemy 1 English main menu reached | `evidence/screenshots/clean-clone-enemy1-en-menu.png` |
+| `enemy2-de` | Enemy 2 German path reached boot/logo and memory screen | `evidence/screenshots/clean-clone-enemy2-de-memory.png` |
+| `enemy2-en` | Enemy 2 English path reached boot/logo and memory screen | `evidence/screenshots/clean-clone-enemy2-en-memory.png` |
+| `intro-de` | Enemy intro German path reached Anachronia intro frame and exited | `evidence/screenshots/clean-clone-intro-de-anachronia.png` |
+| `intro-en` | Enemy intro English path reached Anachronia intro frame and exited | `evidence/screenshots/clean-clone-intro-en-anachronia.png` |
+
+Automated crop-image sanity check:
+
+```text
+enemy1-de final crop nonblack ratio: 0.4872
+enemy1-en final crop nonblack ratio: 0.4867
+enemy2-de final crop nonblack ratio: 0.7444
+enemy2-en final crop nonblack ratio: 0.7444
+intro-de crop nonblack ratio: 0.0209
+intro-en crop nonblack ratio: 0.0209
+```
+
+The logs for all six profiles confirmed:
+
+- fullscreen desktop mode was selected
+- AROS ROM and extension ROM were mapped
+- profile-specific ADFs were inserted from relative repository paths
+- no Address Error, Guru, or fatal FS-UAE process error was observed during the
+  smoke window
+
 Remaining next checks:
 
-- repeat the 45-second smoke for Enemy 1 EN, Enemy 2 DE/EN, Intro DE/EN
 - add launcher preflight errors for missing `fs-uae`, ROMs, ADFs, or configs
 - add a screenshot hash/non-black assertion to the smoke script
