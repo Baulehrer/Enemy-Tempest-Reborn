@@ -491,6 +491,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
     final values = <String, String>{
       'video_sync': '0',
+      'zoom': 'auto',
       'uaelogfile': logFile,
       'screenshots_output_prefix': 'tempestreborn_runtime_${targetId}_',
       'enemy_launcher_runtime': '1',

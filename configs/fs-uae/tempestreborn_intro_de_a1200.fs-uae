@@ -32,6 +32,7 @@ full_keyboard = 0
 fullscreen = 1
 video_sync = 0
 cursor = auto
+zoom = auto
 
 screenshots_output_dir = output/screenshots
 screenshots_output_prefix = tempestreborn_intro_de_a1200_
