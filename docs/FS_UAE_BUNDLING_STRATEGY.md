@@ -201,3 +201,8 @@ enemy1-de  timeout_terminated
 
 This proves the package fallback path finds and uses the bundled
 `bin/fs-uae/fs-uae` binary.
+
+A fuller package probe is documented in
+`docs/BUNDLED_FS_UAE_DEV_PACKAGE_TEST.md`. That probe proves bundled launch and
+Enemy 1 smoke, but also records that the long automated matrix still depends too
+much on host focus/ydotool behavior for screenshots and Intro exit.

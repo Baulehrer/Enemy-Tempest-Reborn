@@ -41,6 +41,12 @@ if [ -n "$FS_UAE_BUNDLE_BIN" ]; then
   mkdir -p "$STAGE/bin/fs-uae"
   cp "$FS_UAE_BUNDLE_BIN" "$STAGE/bin/fs-uae/fs-uae"
   chmod +x "$STAGE/bin/fs-uae/fs-uae"
+  if [ -f /usr/share/doc/fs-uae/COPYING ]; then
+    cp /usr/share/doc/fs-uae/COPYING "$STAGE/bin/fs-uae/COPYING"
+  fi
+  if [ -f /usr/share/doc/fs-uae/README ]; then
+    cp /usr/share/doc/fs-uae/README "$STAGE/bin/fs-uae/README"
+  fi
   {
     echo "Bundled FS-UAE binary"
     echo "source_path=$FS_UAE_BUNDLE_BIN"
