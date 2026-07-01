@@ -48,6 +48,9 @@ configs/fs-uae/tempestreborn_enemy1_de_a1200.fs-uae
 The Tempest Reborn configs use paths relative to the repository root. The
 launcher writes runtime configs to `work/launcher-runtime/` and applies the
 selected display/aspect/filter/control options before starting FS-UAE.
+Before starting, it checks `fs-uae`, the selected base profile, the AROS ROMs,
+and the required Enemy disk images. Missing runtime files are reported in the
+launcher status area.
 
 Launcher settings currently include:
 
@@ -69,7 +72,7 @@ flutter test
 flutter build linux
 ```
 
-All three passed on 2026-06-30.
+All three passed on 2026-07-01 after adding launcher preflight checks.
 
 ## Repository Name Note
 

@@ -68,6 +68,14 @@ class LauncherTarget {
   final List<String> shots;
 }
 
+class PreflightResult {
+  const PreflightResult.ok() : message = null;
+  const PreflightResult.blocked(this.message);
+
+  final String? message;
+  bool get passed => message == null;
+}
+
 class LauncherScreen extends StatefulWidget {
   const LauncherScreen({super.key});
 
@@ -170,12 +178,10 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
     final root = _projectRoot();
     final baseConfig = _baseConfigFile(root, selected);
-    if (!baseConfig.existsSync()) {
-      setState(() {
-        _status = _english
-            ? 'Missing base profile: ${baseConfig.path}'
-            : 'Basisprofil fehlt: ${baseConfig.path}';
-      });
+
+    final preflight = await _runPreflight(root, baseConfig);
+    if (!preflight.passed) {
+      setState(() => _status = preflight.message!);
       return;
     }
 
@@ -226,6 +232,78 @@ class _LauncherScreenState extends State<LauncherScreen> {
       });
     } finally {
       if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<PreflightResult> _runPreflight(Directory root, File baseConfig) async {
+    if (!await _commandExists('fs-uae')) {
+      return PreflightResult.blocked(
+        _english
+            ? 'FS-UAE was not found. Install fs-uae or add it to PATH.'
+            : 'FS-UAE wurde nicht gefunden. Installiere fs-uae oder nimm es in den PATH auf.',
+      );
+    }
+
+    if (!baseConfig.existsSync()) {
+      return PreflightResult.blocked(
+        _english
+            ? 'Missing base profile: ${_relativePath(root, baseConfig)}'
+            : 'Basisprofil fehlt: ${_relativePath(root, baseConfig)}',
+      );
+    }
+
+    late final Map<String, String> config;
+    try {
+      config = _readConfigValues(await baseConfig.readAsString());
+    } on Object catch (error) {
+      return PreflightResult.blocked(
+        _english
+            ? 'Could not read base profile: $error'
+            : 'Basisprofil konnte nicht gelesen werden: $error',
+      );
+    }
+
+    final requiredFiles = <String, String>{
+      'kickstart_file': _english ? 'AROS ROM' : 'AROS-ROM',
+      'kickstart_ext_file': _english ? 'AROS extension ROM' : 'AROS-Ext-ROM',
+      'floppy_drive_0': _english ? 'Disk image A' : 'Diskettenimage A',
+      'floppy_drive_1': _english ? 'Disk image B' : 'Diskettenimage B',
+    };
+
+    final missing = <String>[];
+    for (final entry in requiredFiles.entries) {
+      final value = config[entry.key]?.trim();
+      if (value == null || value.isEmpty) {
+        missing.add(
+          '${entry.value}: ${_english ? 'not configured' : 'nicht konfiguriert'}',
+        );
+        continue;
+      }
+      final file = _configPath(root, value);
+      if (!file.existsSync()) {
+        missing.add('${entry.value}: ${_relativePath(root, file)}');
+      }
+    }
+
+    if (missing.isNotEmpty) {
+      final shown = missing.take(3).join(' | ');
+      final more = missing.length > 3 ? ' +${missing.length - 3}' : '';
+      return PreflightResult.blocked(
+        _english
+            ? 'Missing runtime file: $shown$more'
+            : 'Laufzeitdatei fehlt: $shown$more',
+      );
+    }
+
+    return const PreflightResult.ok();
+  }
+
+  Future<bool> _commandExists(String command) async {
+    try {
+      final result = await Process.run('which', [command]);
+      return result.exitCode == 0;
+    } on Object {
+      return false;
     }
   }
 
@@ -341,6 +419,37 @@ class _LauncherScreenState extends State<LauncherScreen> {
     return File(
       '${root.path}${Platform.pathSeparator}configs${Platform.pathSeparator}fs-uae${Platform.pathSeparator}$name',
     );
+  }
+
+  Map<String, String> _readConfigValues(String config) {
+    final values = <String, String>{};
+    for (final line in config.split('\n')) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty ||
+          trimmed.startsWith('#') ||
+          trimmed.startsWith(';') ||
+          trimmed.startsWith('[')) {
+        continue;
+      }
+      final equals = trimmed.indexOf('=');
+      if (equals <= 0) continue;
+      final key = trimmed.substring(0, equals).trim();
+      final value = trimmed.substring(equals + 1).trim();
+      values[key] = value;
+    }
+    return values;
+  }
+
+  File _configPath(Directory root, String value) {
+    final expanded = value.replaceAll('/', Platform.pathSeparator);
+    if (File(expanded).isAbsolute) return File(expanded);
+    return File('${root.path}${Platform.pathSeparator}$expanded');
+  }
+
+  String _relativePath(Directory root, File file) {
+    final prefix = '${root.path}${Platform.pathSeparator}';
+    if (file.path.startsWith(prefix)) return file.path.substring(prefix.length);
+    return file.path;
   }
 
   Future<File> _writeRuntimeConfig(

@@ -51,6 +51,9 @@ Die Tempest-Reborn-Konfigurationen nutzen relative Pfade ab Repository-Wurzel.
 Der Launcher schreibt Runtime-Konfigurationen nach `work/launcher-runtime/` und
 setzt die gewaehlten Anzeige-/Aspect-/Filter-/Steuerungsoptionen vor dem
 FS-UAE-Start.
+Vor dem Start prueft der Launcher `fs-uae`, das gewaehlte Basisprofil, die
+AROS-ROMs und die benoetigten Enemy-Diskettenimages. Fehlende Laufzeitdateien
+werden im Statusbereich des Launchers gemeldet.
 
 Aktuelle Launcher-Einstellungen:
 
@@ -73,4 +76,5 @@ flutter test
 flutter build linux
 ```
 
-Alle drei Pruefungen waren am 2026-06-30 erfolgreich.
+Alle drei Pruefungen waren am 2026-07-01 nach Einbau der Launcher-Preflight-
+Checks erfolgreich.

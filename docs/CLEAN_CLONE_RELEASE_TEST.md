@@ -177,5 +177,26 @@ The logs for all six profiles confirmed:
 
 Remaining next checks:
 
-- add launcher preflight errors for missing `fs-uae`, ROMs, ADFs, or configs
 - add a screenshot hash/non-black assertion to the smoke script
+
+## Launcher Preflight
+
+Date: 2026-07-01
+
+The launcher now checks the runtime environment before writing and starting the
+FS-UAE runtime profile:
+
+- `fs-uae` must be available in `PATH`
+- the selected base profile under `configs/fs-uae/` must exist
+- `kickstart_file` must resolve to an existing AROS ROM
+- `kickstart_ext_file` must resolve to an existing AROS extension ROM
+- `floppy_drive_0` and `floppy_drive_1` must resolve to existing disk images
+
+Relative paths are resolved from the repository root, matching how FS-UAE is
+started by the launcher. If a preflight check fails, FS-UAE is not launched and
+the launcher status line shows a direct error such as:
+
+```text
+FS-UAE was not found. Install fs-uae or add it to PATH.
+Missing runtime file: Disk image A: work/kickstart-deps/...
+```
