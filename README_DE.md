@@ -29,6 +29,7 @@ Siehe:
 - `docs/CLOSEWB_NOP_FIX_DE.md`
 - `docs/CLOSEWB_NOP_FIX_EN.md`
 - `docs/TECHNICAL_ARTIFACTS.md`
+- `docs/CLEAN_CLONE_RELEASE_TEST.md`
 - `LICENSES.md`
 
 ## Schnelltest
