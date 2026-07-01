@@ -31,6 +31,7 @@ Siehe:
 - `docs/TECHNICAL_ARTIFACTS.md`
 - `docs/CLEAN_CLONE_RELEASE_TEST.md`
 - `docs/ROADMAP_v0.2.0.md`
+- `docs/FS_UAE_BUNDLING_STRATEGY.md`
 - `LICENSES.md`
 
 ## Schnelltest

@@ -2,7 +2,11 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-FS_UAE_BIN="${FS_UAE_BIN:-fs-uae}"
+DEFAULT_FS_UAE="${ROOT}/bin/fs-uae/fs-uae"
+if [ ! -x "$DEFAULT_FS_UAE" ]; then
+  DEFAULT_FS_UAE="fs-uae"
+fi
+FS_UAE_BIN="${FS_UAE_BIN:-$DEFAULT_FS_UAE}"
 CAPTURE_ROOT="${ROOT}/work/launcher-smoke"
 RUN_ID="$(date +%Y%m%dT%H%M%S%z)"
 RUN_DIR="${CAPTURE_ROOT}/${RUN_ID}"
@@ -208,7 +212,12 @@ if [ "${1:-all}" = "-h" ] || [ "${1:-all}" = "--help" ]; then
   exit 0
 fi
 
-if ! command -v "$FS_UAE_BIN" >/dev/null 2>&1; then
+if [[ "$FS_UAE_BIN" == */* ]]; then
+  if [ ! -x "$FS_UAE_BIN" ]; then
+    echo "missing fs-uae binary: ${FS_UAE_BIN}" >&2
+    exit 127
+  fi
+elif ! command -v "$FS_UAE_BIN" >/dev/null 2>&1; then
   echo "missing fs-uae binary: ${FS_UAE_BIN}" >&2
   exit 127
 fi

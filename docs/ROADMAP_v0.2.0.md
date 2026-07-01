@@ -30,6 +30,11 @@ bin/fs-uae/fs-uae
 If that executable exists, the launcher uses it. Otherwise it falls back to
 `fs-uae` from `PATH`.
 
+The detailed Linux x64 bundling plan is documented in
+`docs/FS_UAE_BUNDLING_STRATEGY.md`. The first bundle target is unmodified
+FS-UAE 3.2.35; project-specific FS-UAE patches should start only after that
+bundle is proven against the existing smoke matrix.
+
 ## Priority 2: About And Version Surface
 
 The launcher now has an `ABOUT` button with:

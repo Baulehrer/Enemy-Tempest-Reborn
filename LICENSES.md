@@ -31,6 +31,19 @@ built on 2026-06-21.
 
 No Commodore Kickstart ROMs are included.
 
+## FS-UAE
+
+`v0.1.0` does not bundle FS-UAE; it expects an installed `fs-uae` in `PATH`.
+
+The v0.2.0 package line is planned to bundle FS-UAE. The current local baseline
+is FS-UAE `3.2.35`; the installed Linux package metadata reports
+`GPL-2.0-only`. Any package that bundles FS-UAE must include the GPL license
+text, corresponding source access for the exact FS-UAE binary, and documentation
+for any project patches.
+
+The planned bundling path is documented in
+`docs/FS_UAE_BUNDLING_STRATEGY.md`.
+
 ## Repository Scripts and Documentation
 
 The patch scripts, capture helpers, and documentation in this repository may be
@@ -43,4 +56,3 @@ This repository does not claim that AROS itself was patched. The successful
 workaround currently patches the Enemy `c/closewb` helper inside the Enemy ADF.
 The AROS ROMs are included so AROS developers can reproduce the behavior against
 the exact ROM binaries used in the tests.
-

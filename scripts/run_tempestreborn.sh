@@ -2,6 +2,11 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+DEFAULT_FS_UAE="${ROOT}/bin/fs-uae/fs-uae"
+if [ ! -x "$DEFAULT_FS_UAE" ]; then
+  DEFAULT_FS_UAE="fs-uae"
+fi
+FS_UAE_BIN="${FS_UAE_BIN:-$DEFAULT_FS_UAE}"
 GAME="${1:-enemy1}"
 LANGUAGE="${2:-de}"
 PROFILE="${3:-a1200}"
@@ -20,9 +25,14 @@ case "${GAME}:${LANGUAGE}:${PROFILE}:${MODE}" in
     ;;
 esac
 
-if ! command -v fs-uae >/dev/null 2>&1; then
-  echo "missing fs-uae in PATH" >&2
+if [[ "$FS_UAE_BIN" == */* ]]; then
+  if [ ! -x "$FS_UAE_BIN" ]; then
+    echo "missing fs-uae binary: ${FS_UAE_BIN}" >&2
+    exit 127
+  fi
+elif ! command -v "$FS_UAE_BIN" >/dev/null 2>&1; then
+  echo "missing fs-uae binary: ${FS_UAE_BIN}" >&2
   exit 127
 fi
 
-exec fs-uae "$CONFIG"
+exec "$FS_UAE_BIN" "$CONFIG"
