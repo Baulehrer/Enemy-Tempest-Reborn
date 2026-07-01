@@ -84,6 +84,7 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
+  static const appVersion = '0.2.0-dev';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
 
   TargetKind _target = TargetKind.enemy1;
@@ -178,8 +179,9 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
     final root = _projectRoot();
     final baseConfig = _baseConfigFile(root, selected);
+    final fsUae = _fsUaeExecutable(root);
 
-    final preflight = await _runPreflight(root, baseConfig);
+    final preflight = await _runPreflight(root, baseConfig, fsUae);
     if (!preflight.passed) {
       setState(() => _status = preflight.message!);
       return;
@@ -199,7 +201,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
         selected,
       );
       final process = await Process.start(
-        'fs-uae',
+        fsUae,
         [runtimeConfig.path],
         workingDirectory: root.path,
         mode: selected.mode == 'game'
@@ -235,12 +237,16 @@ class _LauncherScreenState extends State<LauncherScreen> {
     }
   }
 
-  Future<PreflightResult> _runPreflight(Directory root, File baseConfig) async {
-    if (!await _commandExists('fs-uae')) {
+  Future<PreflightResult> _runPreflight(
+    Directory root,
+    File baseConfig,
+    String fsUae,
+  ) async {
+    if (!await _commandExists(fsUae)) {
       return PreflightResult.blocked(
         _english
-            ? 'FS-UAE was not found. Install fs-uae or add it to PATH.'
-            : 'FS-UAE wurde nicht gefunden. Installiere fs-uae oder nimm es in den PATH auf.',
+            ? 'FS-UAE was not found. Use the bundled FS-UAE build or add fs-uae to PATH.'
+            : 'FS-UAE wurde nicht gefunden. Nutze das mitgelieferte FS-UAE oder nimm fs-uae in den PATH auf.',
       );
     }
 
@@ -300,11 +306,23 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
   Future<bool> _commandExists(String command) async {
     try {
+      if (command.contains(Platform.pathSeparator)) {
+        final file = File(command);
+        return file.existsSync();
+      }
       final result = await Process.run('which', [command]);
       return result.exitCode == 0;
     } on Object {
       return false;
     }
+  }
+
+  String _fsUaeExecutable(Directory root) {
+    final bundled = File(
+      '${root.path}${Platform.pathSeparator}bin${Platform.pathSeparator}fs-uae${Platform.pathSeparator}fs-uae',
+    );
+    if (bundled.existsSync()) return bundled.path;
+    return 'fs-uae';
   }
 
   Future<void> _openCartographer() async {
@@ -615,6 +633,18 @@ class _LauncherScreenState extends State<LauncherScreen> {
     _saveSettings();
   }
 
+  void _showAbout() {
+    final english = _english;
+    showDialog<void>(
+      context: context,
+      builder: (context) => _AboutDialog(
+        english: english,
+        version: appVersion,
+        onClose: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final selected = _selected;
@@ -624,7 +654,11 @@ class _LauncherScreenState extends State<LauncherScreen> {
           const Positioned.fill(child: _BlueBackground()),
           Column(
             children: [
-              _Header(language: _language, onLanguageChanged: _setLanguage),
+              _Header(
+                language: _language,
+                onLanguageChanged: _setLanguage,
+                onAbout: _showAbout,
+              ),
               Expanded(
                 child: Center(
                   child: ConstrainedBox(
@@ -689,10 +723,15 @@ class _LauncherScreenState extends State<LauncherScreen> {
 }
 
 class _Header extends StatelessWidget {
-  const _Header({required this.language, required this.onLanguageChanged});
+  const _Header({
+    required this.language,
+    required this.onLanguageChanged,
+    required this.onAbout,
+  });
 
   final LanguageChoice language;
   final ValueChanged<LanguageChoice> onLanguageChanged;
+  final VoidCallback onAbout;
 
   @override
   Widget build(BuildContext context) {
@@ -716,9 +755,15 @@ class _Header extends StatelessWidget {
           Positioned(
             right: 28,
             top: 36,
-            child: _LanguageFlags(
-              language: language,
-              onChanged: onLanguageChanged,
+            child: Row(
+              children: [
+                _AboutButton(onTap: onAbout),
+                const SizedBox(width: 14),
+                _LanguageFlags(
+                  language: language,
+                  onChanged: onLanguageChanged,
+                ),
+              ],
             ),
           ),
           Align(
@@ -759,6 +804,195 @@ class _Header extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _AboutButton extends StatelessWidget {
+  const _AboutButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 28,
+        padding: const EdgeInsets.symmetric(horizontal: 10),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: Colors.black.withValues(alpha: 0.62),
+          border: Border.all(color: SiteColors.line),
+        ),
+        child: const Text(
+          'ABOUT',
+          style: TextStyle(
+            color: SiteColors.pink,
+            fontSize: 12,
+            fontWeight: FontWeight.w900,
+            letterSpacing: 1,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _AboutDialog extends StatelessWidget {
+  const _AboutDialog({
+    required this.english,
+    required this.version,
+    required this.onClose,
+  });
+
+  final bool english;
+  final String version;
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final title = english ? 'About' : 'Info';
+    final featureTitle = english ? 'Included' : 'Enthalten';
+    final featureLines = english
+        ? const [
+            'Enemy 1 and Enemy 2 in German and English',
+            'separate Enemy 1 intro launcher',
+            'AROS ROM profile with prepared Enemy ADF patches',
+            'fullscreen-first FS-UAE runtime profiles',
+            'launcher preflight for emulator, ROMs and disk images',
+          ]
+        : const [
+            'Enemy 1 und Enemy 2 auf Deutsch und Englisch',
+            'separater Enemy-1-Intro-Start',
+            'AROS-ROM-Profil mit vorbereiteten Enemy-ADF-Patches',
+            'Fullscreen-orientierte FS-UAE-Runtime-Profile',
+            'Launcher-Pruefung fuer Emulator, ROMs und Diskettenimages',
+          ];
+    final futureTitle = english ? 'Next' : 'Naechster Schritt';
+    final futureText = english
+        ? 'FS-UAE is currently expected in PATH. A bundled, project-patched FS-UAE build is planned for the next package line.'
+        : 'FS-UAE wird aktuell im PATH erwartet. Ein mitgelieferter, projektspezifisch gepatchter FS-UAE-Build ist fuer die naechste Paketlinie geplant.';
+
+    return AlertDialog(
+      backgroundColor: const Color(0xff151923),
+      shape: const RoundedRectangleBorder(),
+      title: Text(
+        title.toUpperCase(),
+        style: const TextStyle(
+          color: SiteColors.blueText,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.5,
+        ),
+      ),
+      content: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 560),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            _AboutLine(label: 'Project', value: 'Enemy: Tempest Reborn'),
+            _AboutLine(label: 'Version', value: version),
+            const SizedBox(height: 14),
+            _AboutSection(title: featureTitle, lines: featureLines),
+            const SizedBox(height: 14),
+            Text(
+              futureTitle.toUpperCase(),
+              style: const TextStyle(
+                color: SiteColors.white,
+                fontWeight: FontWeight.w900,
+                fontSize: 12,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              futureText,
+              style: const TextStyle(color: SiteColors.text, height: 1.35),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: onClose,
+          child: Text(
+            english ? 'CLOSE' : 'SCHLIESSEN',
+            style: const TextStyle(
+              color: SiteColors.pink,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _AboutLine extends StatelessWidget {
+  const _AboutLine({required this.label, required this.value});
+
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 5),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 92,
+            child: Text(
+              label.toUpperCase(),
+              style: const TextStyle(
+                color: SiteColors.white,
+                fontSize: 12,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: const TextStyle(color: SiteColors.text, height: 1.25),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _AboutSection extends StatelessWidget {
+  const _AboutSection({required this.title, required this.lines});
+
+  final String title;
+  final List<String> lines;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Text(
+          title.toUpperCase(),
+          style: const TextStyle(
+            color: SiteColors.white,
+            fontWeight: FontWeight.w900,
+            fontSize: 12,
+          ),
+        ),
+        const SizedBox(height: 6),
+        for (final line in lines)
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4),
+            child: Text(
+              '- $line',
+              style: const TextStyle(color: SiteColors.text, height: 1.28),
+            ),
+          ),
+      ],
     );
   }
 }

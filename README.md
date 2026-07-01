@@ -28,6 +28,7 @@ See:
 - `docs/CLOSEWB_NOP_FIX_DE.md`
 - `docs/TECHNICAL_ARTIFACTS.md`
 - `docs/CLEAN_CLONE_RELEASE_TEST.md`
+- `docs/ROADMAP_v0.2.0.md`
 - `LICENSES.md`
 
 ## Quick Test
@@ -51,6 +52,8 @@ selected display/aspect/filter/control options before starting FS-UAE.
 Before starting, it checks `fs-uae`, the selected base profile, the AROS ROMs,
 and the required Enemy disk images. Missing runtime files are reported in the
 launcher status area.
+For the next package line, the launcher is prepared to prefer a bundled
+`bin/fs-uae/fs-uae` binary before falling back to system `fs-uae`.
 
 Launcher settings currently include:
 

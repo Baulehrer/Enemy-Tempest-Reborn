@@ -20,7 +20,15 @@ void main() {
     expect(find.text('Enemy 1'), findsNothing);
     expect(find.text('ENEMY 2'), findsAtLeastNWidgets(1));
     expect(find.text('INTRO'), findsOneWidget);
+    expect(find.text('ABOUT'), findsOneWidget);
     expect(find.text('SPIEL STARTEN'), findsOneWidget);
     expect(find.text('KNOWN GOOD'), findsNothing);
+
+    await tester.tap(find.text('ABOUT'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('INFO'), findsOneWidget);
+    expect(find.text('Enemy: Tempest Reborn'), findsOneWidget);
+    expect(find.text('0.2.0-dev'), findsOneWidget);
   });
 }

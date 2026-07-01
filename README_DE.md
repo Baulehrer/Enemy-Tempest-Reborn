@@ -30,6 +30,7 @@ Siehe:
 - `docs/CLOSEWB_NOP_FIX_EN.md`
 - `docs/TECHNICAL_ARTIFACTS.md`
 - `docs/CLEAN_CLONE_RELEASE_TEST.md`
+- `docs/ROADMAP_v0.2.0.md`
 - `LICENSES.md`
 
 ## Schnelltest
@@ -54,6 +55,9 @@ FS-UAE-Start.
 Vor dem Start prueft der Launcher `fs-uae`, das gewaehlte Basisprofil, die
 AROS-ROMs und die benoetigten Enemy-Diskettenimages. Fehlende Laufzeitdateien
 werden im Statusbereich des Launchers gemeldet.
+Fuer die naechste Paketlinie ist der Launcher darauf vorbereitet, ein
+mitgeliefertes `bin/fs-uae/fs-uae` bevorzugt zu verwenden und nur sonst auf das
+systemweite `fs-uae` zurueckzufallen.
 
 Aktuelle Launcher-Einstellungen:
 
