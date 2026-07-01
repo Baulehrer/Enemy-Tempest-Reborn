@@ -23,6 +23,8 @@ a relative archive filename instead of an absolute local build path.
 - floppy drive speed at maximum
 - floppy sounds disabled
 - A1200 profile with 2 MB Chip RAM and 2 MB Fast RAM
+- keyboard mode maps cursor keys and WASD to joystick directions
+- `Space`, Right `Ctrl`, and Right `Alt` act as fire
 
 `F12` opens the internal FS-UAE menu. `F11` cycles FS-UAE zoom modes.
 

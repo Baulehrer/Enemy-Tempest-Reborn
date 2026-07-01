@@ -35,6 +35,7 @@ Siehe:
 - `docs/ROADMAP_v0.2.0.md`
 - `docs/FS_UAE_BUNDLING_STRATEGY.md`
 - `docs/BUNDLED_FS_UAE_DEV_PACKAGE_TEST.md`
+- `docs/KEYBOARD_CONTROLS.md`
 - `docs/RELEASE_v0.2.0-preview1.md`
 - `docs/RELEASE_v0.2.0-preview2.md`
 - `LICENSES.md`
@@ -76,6 +77,10 @@ Aktuelle Launcher-Einstellungen:
 - `Aspect`: `4:3`, `Pixel` oder `Stretch`
 - `Pixel`: `Sharp`, `Smooth` oder `CRT`
 - `Steuerung`: `Keyboard`, `Gamepad` oder `Joystick`
+
+Die Tastatursteuerung legt Cursor-Tasten und WASD auf die Joystick-Richtungen.
+`Space`, rechte `Ctrl` und rechte `Alt` sind Feuer. Die originalen Enemy-Tasten
+wie `P`, `R`, `Backspace`, `Delete` und `Esc` bleiben verfuegbar.
 
 Das Launcher-Menue ist zweisprachig. Bei Umschaltung auf Englisch wechseln auch
 die Menue-Texte.

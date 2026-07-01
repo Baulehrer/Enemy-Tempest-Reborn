@@ -1,4 +1,5 @@
 [fs-uae]
+data_dir = configs/fs-uae-data
 amiga_model = A1200
 kickstart_file = roms/aros/aros-rom.bin
 kickstart_ext_file = roms/aros/aros-ext.bin
@@ -28,6 +29,7 @@ automatic_input_grab = 1
 initial_input_grab = 1
 keyboard_input_grab = 1
 full_keyboard = 0
+keyboard_key_h = action_key_help
 
 fullscreen = 1
 video_sync = 0
