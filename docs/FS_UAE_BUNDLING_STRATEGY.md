@@ -59,6 +59,10 @@ Enemy-Tempest-Reborn-v0.2.0-linux-x64/
       COPYING
       source/
       THIRD_PARTY_NOTICES.md
+    share/
+      fs-uae/
+        fs-uae.dat
+        share-dir
   configs/
   assets/
   roms/
@@ -103,9 +107,12 @@ their licenses and source obligations must be checked individually.
 
 - build or collect FS-UAE 3.2.35
 - place executable at `bin/fs-uae/fs-uae`
+- copy FS-UAE runtime data to `bin/share/fs-uae/`, matching the binary's
+  relative lookup path `../share/fs-uae/share-dir`
 - package launcher plus runtime data
 - run the clean package smoke matrix
 - confirm the launcher status does not ask for system `fs-uae`
+- confirm `F12` opens FS-UAE's internal menu in the bundled package
 
 Acceptance:
 
@@ -176,6 +183,23 @@ Implemented on `main` after `v0.1.0`:
 - `scripts/package_linux_x64.sh` builds package archives
 - `scripts/package_linux_x64.sh` can include a bundled executable via
   `FS_UAE_BUNDLE_BIN`
+- bundled builds also copy `/usr/share/fs-uae` to `bin/share/fs-uae`, so the
+  internal FS-UAE menu/theme data is available from the same relative path as
+  in a system install
+
+Important packaging detail:
+
+```text
+System binary path:   /usr/bin/fs-uae
+System data path:     /usr/share/fs-uae
+Bundled binary path:  bin/fs-uae/fs-uae
+Bundled data path:    bin/share/fs-uae
+```
+
+The bundled data path is intentional. FS-UAE looks for its data relative to the
+executable path via `../share/fs-uae`. Copying only the executable is enough to
+boot Enemy, but it can leave FS-UAE's internal `F12` menu without its runtime
+data.
 
 Local proof run:
 
