@@ -78,8 +78,11 @@ Launcher settings currently include:
 - `Control`: `Keyboard`, `Gamepad`, or `Joystick`
 
 Keyboard control maps cursor keys and WASD to joystick directions. `Space`,
-Right `Ctrl`, Right `Alt`, and Right `Shift` act as fire. The original Enemy keys such as
-`P`, `R`, `Backspace`, `Delete`, and `Esc` remain available.
+Right `Ctrl`, Right `Alt`, and Right `Shift` act as fire. Joystick keeps the
+original Amiga-style direction plus fire control, with `H` mapped to Amiga
+`HELP`. Gamepad maps `L1` to pause, `R1` to help, and `L2`/`R2`/`Select` to
+replay. The original Enemy keys such as `P`, `R`, `Backspace`, `Delete`, and
+`Esc` remain available.
 
 The launcher UI is bilingual. Switching to English also switches the menu text.
 

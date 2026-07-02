@@ -81,7 +81,9 @@ Aktuelle Launcher-Einstellungen:
 - `Steuerung`: `Keyboard`, `Gamepad` oder `Joystick`
 
 Die Tastatursteuerung legt Cursor-Tasten und WASD auf die Joystick-Richtungen.
-`Space`, rechte `Ctrl`, rechte `Alt` und rechte `Shift` sind Feuer. Die
+`Space`, rechte `Ctrl`, rechte `Alt` und rechte `Shift` sind Feuer. Joystick
+bleibt originalnah bei Richtung plus Feuer, mit `H` als Amiga-`HELP`. Gamepad
+legt `L1` auf Pause, `R1` auf Hilfe und `L2`/`R2`/`Select` auf Replay. Die
 originalen Enemy-Tasten wie `P`, `R`, `Backspace`, `Delete` und `Esc` bleiben
 verfuegbar.
 

@@ -1,11 +1,12 @@
-# Keyboard Controls
+# Controls
 
-Date: 2026-07-01
+Date: 2026-07-02
 
 Enemy remains controlled like the original Amiga game: joystick directions plus
-one fire button. The host keyboard only emulates that joystick more comfortably.
+one fire button. The launcher provides keyboard, joystick and gamepad presets
+around that original control model.
 
-## Main Controls
+## Keyboard
 
 | Action | Keyboard |
 | --- | --- |
@@ -15,6 +16,29 @@ one fire button. The host keyboard only emulates that joystick more comfortably.
 | Down / aim down / pick up / crouch | Arrow Down or `S` |
 | Fire / action / menu confirm | `Space` |
 | Fire alternative | Right `Ctrl`, Right `Alt`, or Right `Shift` |
+
+## Joystick
+
+The joystick preset keeps the original Amiga control model:
+
+| Action | Joystick / Keyboard |
+| --- | --- |
+| Movement | Joystick directions |
+| Fire / action / menu confirm | Joystick fire |
+| Help | `H` maps to Amiga `HELP` |
+
+## Gamepad
+
+The gamepad preset keeps normal movement and fire on the gamepad, and adds
+Enemy-specific convenience buttons:
+
+| Action | Gamepad |
+| --- | --- |
+| Movement | D-Pad or left stick |
+| Fire / action / menu confirm | Main face buttons |
+| Pause | `L1` |
+| Help | `R1` |
+| Replay | `L2`, `R2`, or `Select` |
 
 ## Original Enemy Keys
 
@@ -64,3 +88,17 @@ key_rshift = 1
 The `[default]` section still includes FS-UAE's `default_keyboard` for non-Amiga
 contexts such as menus, but the `[amiga]` section does not rely on hidden
 defaults for gameplay.
+
+The launcher additionally writes runtime-only FS-UAE overrides for the selected
+control preset. For `Gamepad`, the important overrides are:
+
+```text
+joystick_port_1_primary = 1
+joystick_port_1_secondary = 1
+joystick_port_1_tertiary = 1
+joystick_port_1_left_shoulder = action_key_p
+joystick_port_1_right_shoulder = action_key_help
+joystick_port_1_left_trigger = action_key_r
+joystick_port_1_right_trigger = action_key_r
+joystick_port_1_select_button = action_key_r
+```
