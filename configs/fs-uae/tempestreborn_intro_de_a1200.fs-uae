@@ -35,6 +35,8 @@ fullscreen = 1
 video_sync = 0
 cursor = auto
 zoom = auto
+texture_filter = nearest
+smoothing = 0
 
 screenshots_output_dir = output/screenshots
 screenshots_output_prefix = tempestreborn_intro_de_a1200_

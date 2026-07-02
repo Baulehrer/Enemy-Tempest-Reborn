@@ -538,13 +538,22 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
   Map<String, String> _pixelOverrides(String pixels) {
     return switch (pixels) {
-      'Smooth' => {'texture_filter': 'linear', 'enemy_filter': 'linear'},
-      'CRT' => {
+      'Smooth' => {
         'texture_filter': 'linear',
+        'smoothing': '1',
+        'enemy_filter': 'linear',
+      },
+      'CRT' => {
+        'texture_filter': 'nearest',
+        'smoothing': '0',
         'scanlines': '1',
         'enemy_filter': 'crt',
       },
-      _ => {'texture_filter': 'nearest', 'enemy_filter': 'nearest'},
+      _ => {
+        'texture_filter': 'nearest',
+        'smoothing': '0',
+        'enemy_filter': 'nearest',
+      },
     };
   }
 

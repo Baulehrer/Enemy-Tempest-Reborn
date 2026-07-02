@@ -40,6 +40,8 @@ Siehe:
 - `docs/RELEASE_v0.2.0-preview2.md`
 - `docs/RELEASE_v0.2.0-preview3.md`
 - `docs/RELEASE_v0.2.0-preview4.md`
+- `docs/GRAPHICS_BASELINE.md`
+- `docs/GRAPHICS_FILTER_CHECK.md`
 - `LICENSES.md`
 
 ## Schnelltest
