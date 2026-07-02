@@ -21,7 +21,7 @@ Flutter launcher.
   level 1, but the highest level is unlocked without password entry.
 - The launcher defaults to fullscreen and FS-UAE `zoom = auto`, so the normal
   player path starts full-screen with automatic Amiga viewport cropping.
-- The `v0.2.0-preview3` Linux package includes an unmodified FS-UAE 3.2.35
+- The `v0.2.0-preview4` Linux package includes an unmodified FS-UAE 3.2.35
   binary plus its runtime data. Users do not need a separate system FS-UAE for
   that package.
 
@@ -38,6 +38,7 @@ See:
 - `docs/RELEASE_v0.2.0-preview1.md`
 - `docs/RELEASE_v0.2.0-preview2.md`
 - `docs/RELEASE_v0.2.0-preview3.md`
+- `docs/RELEASE_v0.2.0-preview4.md`
 - `LICENSES.md`
 
 ## Quick Test
@@ -77,7 +78,7 @@ Launcher settings currently include:
 - `Control`: `Keyboard`, `Gamepad`, or `Joystick`
 
 Keyboard control maps cursor keys and WASD to joystick directions. `Space`,
-Right `Ctrl`, and Right `Alt` act as fire. The original Enemy keys such as
+Right `Ctrl`, Right `Alt`, and Right `Shift` act as fire. The original Enemy keys such as
 `P`, `R`, `Backspace`, `Delete`, and `Esc` remain available.
 
 The launcher UI is bilingual. Switching to English also switches the menu text.

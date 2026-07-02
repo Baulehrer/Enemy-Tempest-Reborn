@@ -14,7 +14,7 @@ one fire button. The host keyboard only emulates that joystick more comfortably.
 | Up / aim up / use / climb | Arrow Up or `W` |
 | Down / aim down / pick up / crouch | Arrow Down or `S` |
 | Fire / action / menu confirm | `Space` |
-| Fire alternative | Right `Ctrl` or Right `Alt` |
+| Fire alternative | Right `Ctrl`, Right `Alt`, or Right `Shift` |
 
 ## Original Enemy Keys
 
@@ -44,15 +44,23 @@ data_dir = configs/fs-uae-data
 This keeps the keyboard mapping inside the project/package and avoids writing
 controller profiles into the user's global `Documents/FS-UAE` directory.
 
-The profile includes FS-UAE's `default_keyboard` mapping and only adds:
+The profile keeps the Amiga joystick mapping explicit:
 
 ```text
+key_left = left
+key_right = right
+key_up = up
+key_down = down
 key_a = left
 key_d = right
 key_w = up
 key_s = down
 key_space = 1
+key_rctrl = 1
+key_ralt = 1
+key_rshift = 1
 ```
 
-FS-UAE's default Amiga keyboard joystick mapping still provides cursor keys plus
-Right `Ctrl` and Right `Alt` as fire buttons.
+The `[default]` section still includes FS-UAE's `default_keyboard` for non-Amiga
+contexts such as menus, but the `[amiga]` section does not rely on hidden
+defaults for gameplay.

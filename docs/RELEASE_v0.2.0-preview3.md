@@ -10,7 +10,7 @@ keyboard joystick profile.
 - Cursor keys still control the Amiga joystick.
 - WASD now also controls joystick directions.
 - `Space` now acts as joystick fire.
-- Right `Ctrl` and Right `Alt` remain fire alternatives.
+- Right `Ctrl`, Right `Alt`, and Right `Shift` are fire alternatives.
 - `H` maps to the Amiga `HELP` key.
 - Original Enemy keys such as `P`, `R`, `Backspace`, `Delete`, and `Esc` remain
   available.
@@ -40,14 +40,21 @@ All Tempest Reborn FS-UAE profiles set:
 data_dir = configs/fs-uae-data
 ```
 
-The keyboard profile includes FS-UAE's `default_keyboard` mapping and adds:
+The keyboard profile keeps the Amiga joystick mapping explicit:
 
 ```text
+key_left = left
+key_right = right
+key_up = up
+key_down = down
 key_a = left
 key_d = right
 key_w = up
 key_s = down
 key_space = 1
+key_rctrl = 1
+key_ralt = 1
+key_rshift = 1
 ```
 
 ## Verification

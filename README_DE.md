@@ -22,7 +22,7 @@ FS-UAE-Konfigurationen und der erste hostseitige Flutter-Launcher.
   weiter Level 1, die hoechste Levelauswahl ist aber ohne Passwort freigeschaltet.
 - Der Launcher startet standardmaessig im Fullscreen und mit FS-UAE
   `zoom = auto`, also mit automatischem Amiga-Viewport-Cropping.
-- Das Linux-Paket `v0.2.0-preview3` enthaelt ein unveraendertes FS-UAE 3.2.35
+- Das Linux-Paket `v0.2.0-preview4` enthaelt ein unveraendertes FS-UAE 3.2.35
   samt Runtime-Daten. Fuer dieses Paket muss FS-UAE nicht separat im System
   installiert sein.
 
@@ -39,6 +39,7 @@ Siehe:
 - `docs/RELEASE_v0.2.0-preview1.md`
 - `docs/RELEASE_v0.2.0-preview2.md`
 - `docs/RELEASE_v0.2.0-preview3.md`
+- `docs/RELEASE_v0.2.0-preview4.md`
 - `LICENSES.md`
 
 ## Schnelltest
@@ -80,8 +81,9 @@ Aktuelle Launcher-Einstellungen:
 - `Steuerung`: `Keyboard`, `Gamepad` oder `Joystick`
 
 Die Tastatursteuerung legt Cursor-Tasten und WASD auf die Joystick-Richtungen.
-`Space`, rechte `Ctrl` und rechte `Alt` sind Feuer. Die originalen Enemy-Tasten
-wie `P`, `R`, `Backspace`, `Delete` und `Esc` bleiben verfuegbar.
+`Space`, rechte `Ctrl`, rechte `Alt` und rechte `Shift` sind Feuer. Die
+originalen Enemy-Tasten wie `P`, `R`, `Backspace`, `Delete` und `Esc` bleiben
+verfuegbar.
 
 Das Launcher-Menue ist zweisprachig. Bei Umschaltung auf Englisch wechseln auch
 die Menue-Texte.
