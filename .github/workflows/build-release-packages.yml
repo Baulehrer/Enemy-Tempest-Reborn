@@ -154,6 +154,7 @@ jobs:
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
         run: |
           version="${{ github.event.inputs.version }}"
           if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.5}"; fi
