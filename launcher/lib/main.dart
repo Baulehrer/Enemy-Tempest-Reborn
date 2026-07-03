@@ -208,7 +208,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
       final process = await Process.start(
         fsUae,
         [runtimeConfig.path],
-        workingDirectory: root.path,
+        workingDirectory: _fsUaeWorkingDirectory(root, fsUae),
         mode: selected.mode == 'game'
             ? ProcessStartMode.detached
             : ProcessStartMode.normal,
@@ -330,6 +330,13 @@ class _LauncherScreenState extends State<LauncherScreen> {
     );
     if (bundled.existsSync()) return bundled.path;
     return executableName;
+  }
+
+  String _fsUaeWorkingDirectory(Directory root, String fsUae) {
+    if (fsUae.contains(Platform.pathSeparator)) {
+      return File(fsUae).parent.path;
+    }
+    return root.path;
   }
 
   Future<void> _openCartographer() async {
