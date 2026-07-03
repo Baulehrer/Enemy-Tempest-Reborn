@@ -60,7 +60,8 @@ jobs:
           $version = "${{ github.event.inputs.version }}"
           if ([string]::IsNullOrWhiteSpace($version)) { $version = "${env:GITHUB_REF_NAME}" }
           if ([string]::IsNullOrWhiteSpace($version)) { $version = "v0.2.0-dev" }
-          $fsUae = Get-ChildItem -Path "${env:ProgramFiles}", "${env:ProgramFiles(x86)}" -Filter "fs-uae.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          $searchRoots = @("${env:ProgramFiles}", "${env:ProgramFiles(x86)}", "C:\tools") | Where-Object { Test-Path $_ }
+          $fsUae = Get-ChildItem -Path $searchRoots -Filter "fs-uae.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
           if ($fsUae) {
             .\scripts\package_windows_x64.ps1 -Version $version -FsUaeBundleBin $fsUae.FullName
           } else {

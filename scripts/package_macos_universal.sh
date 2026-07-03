@@ -45,7 +45,18 @@ if [ -n "$FS_UAE_BUNDLE_BIN" ]; then
     exit 2
   fi
   mkdir -p "$STAGE/bin/fs-uae"
-  cp "$FS_UAE_BUNDLE_BIN" "$STAGE/bin/fs-uae/fs-uae"
+  if [[ "$FS_UAE_BUNDLE_BIN" == *.app/Contents/MacOS/* ]]; then
+    APP_ROOT="${FS_UAE_BUNDLE_BIN%%.app/Contents/MacOS/*}.app"
+    cp -R "$APP_ROOT" "$STAGE/bin/fs-uae/"
+    APP_NAME="$(basename "$APP_ROOT")"
+    cat >"$STAGE/bin/fs-uae/fs-uae" <<EOF
+#!/usr/bin/env bash
+DIR="\$(cd "\$(dirname "\$0")" && pwd)"
+exec "\$DIR/${APP_NAME}/Contents/MacOS/$(basename "$FS_UAE_BUNDLE_BIN")" "\$@"
+EOF
+  else
+    cp "$FS_UAE_BUNDLE_BIN" "$STAGE/bin/fs-uae/fs-uae"
+  fi
   chmod +x "$STAGE/bin/fs-uae/fs-uae"
   {
     echo "Bundled FS-UAE binary"

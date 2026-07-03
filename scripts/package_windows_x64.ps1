@@ -53,10 +53,15 @@ if (-not [string]::IsNullOrWhiteSpace($FsUaeBundleBin)) {
   }
   $FsUaeDir = Join-Path $Stage "bin/fs-uae"
   New-Item -ItemType Directory -Force -Path $FsUaeDir | Out-Null
-  Copy-Item -Force $FsUaeBundleBin (Join-Path $FsUaeDir "fs-uae.exe")
+  $FsUaeSourceDir = Split-Path -Parent $FsUaeBundleBin
+  Copy-Item -Recurse -Force (Join-Path $FsUaeSourceDir "*") $FsUaeDir
+  if (-not (Test-Path (Join-Path $FsUaeDir "fs-uae.exe"))) {
+    Copy-Item -Force $FsUaeBundleBin (Join-Path $FsUaeDir "fs-uae.exe")
+  }
   @(
     "Bundled FS-UAE binary"
     "source_path=$FsUaeBundleBin"
+    "source_dir=$FsUaeSourceDir"
   ) | Set-Content -Encoding ASCII (Join-Path $FsUaeDir "BUNDLE_INFO.txt")
 }
 
