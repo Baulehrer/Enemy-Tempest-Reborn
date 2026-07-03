@@ -113,7 +113,7 @@ Checks erfolgreich.
 Portable Pakete werden gebaut mit:
 
 ```bash
-VERSION=v0.2.0-dev ./scripts/package_linux_x64.sh
+VERSION=v0.5 ./scripts/package_linux_x64.sh
 ```
 
 Windows- und macOS-Pakete entstehen auf den jeweiligen nativen Runnern ueber

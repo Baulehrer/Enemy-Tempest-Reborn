@@ -84,7 +84,7 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.2.0-dev';
+  static const appVersion = '0.5';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
   static const graphicsPresets = [
     'Original',
@@ -98,7 +98,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
     'Retro': 'crt-hyllian',
     'Retro Plus': 'crt-lottes',
     'Enhanced': 'scalefx',
-    'Enhanced Plus': 'xbrz6x',
+    'Enhanced Plus': 'scale4xhq',
   };
 
   TargetKind _target = TargetKind.enemy1;
@@ -645,8 +645,8 @@ class _LauncherScreenState extends State<LauncherScreen> {
         'texture_filter': 'nearest',
         'smoothing': '0',
         'scanlines': '0',
-        'shader': 'xbrz6x',
-        'enemy_filter': 'xbrz6x',
+        'shader': 'scale4xhq',
+        'enemy_filter': 'scale4xhq',
       },
       _ => {
         'texture_filter': 'nearest',

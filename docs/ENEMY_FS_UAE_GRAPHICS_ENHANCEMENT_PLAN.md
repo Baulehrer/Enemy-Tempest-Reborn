@@ -143,6 +143,21 @@ passieren.
    - Risiken: Latenz, Pixelart-Artefakte, falsche Zwischenbilder bei Text und
      Sprites
 
+5. No-Fork-Plattformoptionen
+   - Linux/SteamOS/Bazzite: `gamescope` ist sinnvoll fuer Fullscreen,
+     integer scaling, FSR/NIS, ReShade, HDR/SDR-Tonemapping, VRR und
+     Frame-Pacing. Es erzeugt aber keine echten 50->100-Hz-Zwischenbilder.
+   - Windows: `Lossless Scaling` ist die beste optionale Pipeline fuer echte
+     Frame Generation (`LSFG x2`) und damit fuer sichtbare 50->100-Hz-Glaettung.
+     Alternativ ist `Magpie` als freier Upscaler/Filter-Wrapper interessant,
+     aber nicht als vollwertiger Frame-Generation-Ersatz.
+   - macOS: aktuell keine vergleichbar einfache externe Pipeline. Zunaechst
+     native FS-UAE-Presets, korrektes Fullscreen/Scaling und spaeter ggf. eine
+     eigene Loesung pruefen.
+   - Cross-platform-Fazit: Ohne FS-UAE-Fork kann nur Windows mit Lossless
+     Scaling echte Zwischenbilder liefern; Linux bekommt mit gamescope bessere
+     Praesentation, aber keine echte Interpolation.
+
 ## Phase 5: Enemy-spezifische Verbesserungen
 
 1. Enemy-Profil
@@ -241,7 +256,9 @@ passieren.
 7. 100-Hz-Frame-Doubling
 8. Frame-Blending
 9. Motion-Smoothing experimentell
-10. Rohdaten-/Asset-Upscaling als separate Forschungsphase
+10. Linux-gamescope-Presets ohne FS-UAE-Fork
+11. Windows-Lossless-Scaling-Hinweise/Profil fuer optionale LSFG-x2-Nutzung
+12. Rohdaten-/Asset-Upscaling als separate Forschungsphase
 
 ## Kurzbewertung
 

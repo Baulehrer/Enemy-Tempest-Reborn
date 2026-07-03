@@ -31,13 +31,13 @@ void main() {
     expect(find.text('crt-hyllian'), findsOneWidget);
     expect(find.text('crt-lottes'), findsOneWidget);
     expect(find.text('scalefx'), findsOneWidget);
-    expect(find.text('xbrz6x'), findsOneWidget);
+    expect(find.text('scale4xhq'), findsOneWidget);
 
     await tester.tap(find.text('ABOUT'));
     await tester.pumpAndSettle();
 
     expect(find.text('INFO'), findsOneWidget);
     expect(find.text('Enemy: Tempest Reborn'), findsOneWidget);
-    expect(find.text('0.2.0-dev'), findsOneWidget);
+    expect(find.text('0.5'), findsOneWidget);
   });
 }

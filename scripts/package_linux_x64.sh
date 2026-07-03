@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${VERSION:-v0.2.0-dev}"
+VERSION="${VERSION:-v0.5}"
 PKG="Enemy-Tempest-Reborn-${VERSION}-linux-x64"
 OUT_DIR="${OUT_DIR:-${ROOT}/dist}"
 STAGE="${OUT_DIR}/${PKG}"

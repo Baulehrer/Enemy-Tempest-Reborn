@@ -108,7 +108,7 @@ All three passed on 2026-07-01 after adding launcher preflight checks.
 Portable packages are built with:
 
 ```bash
-VERSION=v0.2.0-dev ./scripts/package_linux_x64.sh
+VERSION=v0.5 ./scripts/package_linux_x64.sh
 ```
 
 Windows and macOS packages are built on their native runners via
