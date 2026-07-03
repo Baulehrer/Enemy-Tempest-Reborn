@@ -514,14 +514,36 @@ class _LauncherScreenState extends State<LauncherScreen> {
     final runtimeConfig = File(
       '${runtimeDir.path}${Platform.pathSeparator}tempestreborn_runtime_$targetId.fs-uae',
     );
-    final logFile =
-        '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}logs${Platform.pathSeparator}tempestreborn_runtime_$targetId.log';
+    final logDir = Directory(
+      '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}logs',
+    );
+    final screenshotDir = Directory(
+      '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}screenshots',
+    );
+    final stateDir = Directory(
+      '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}states',
+    );
+    await logDir.create(recursive: true);
+    await screenshotDir.create(recursive: true);
+    await stateDir.create(recursive: true);
+
+    final baseText = await baseConfig.readAsString();
+    final baseValues = _readConfigValues(baseText);
+    final absolutePaths = _absoluteRuntimePaths(root, baseValues);
 
     final values = <String, String>{
+      ...absolutePaths,
       'video_sync': '0',
       'zoom': 'auto',
-      'uaelogfile': logFile,
+      'uaelogfile': _fsUaePath(
+        File(
+          '${logDir.path}${Platform.pathSeparator}tempestreborn_runtime_$targetId.log',
+        ),
+      ),
+      'screenshots_output_dir': _fsUaePath(screenshotDir),
       'screenshots_output_prefix': 'tempestreborn_runtime_${targetId}_',
+      'state_dir': _fsUaePath(stateDir),
+      'logs_dir': _fsUaePath(logDir),
       'enemy_launcher_runtime': '1',
       'enemy_target': selected.game.isEmpty ? 'cartographer' : selected.game,
       'enemy_language': _languageCode,
@@ -536,9 +558,34 @@ class _LauncherScreenState extends State<LauncherScreen> {
       ..._controlOverrides(_control),
     };
 
-    final generated = _upsertConfig(await baseConfig.readAsString(), values);
+    final generated = _upsertConfig(baseText, values);
     await runtimeConfig.writeAsString(generated);
     return runtimeConfig;
+  }
+
+  Map<String, String> _absoluteRuntimePaths(
+    Directory root,
+    Map<String, String> baseValues,
+  ) {
+    final values = <String, String>{};
+    for (final key in const [
+      'data_dir',
+      'kickstart_file',
+      'kickstart_ext_file',
+      'floppy_drive_0',
+      'floppy_drive_1',
+      'floppy_drive_2',
+      'floppy_drive_3',
+    ]) {
+      final value = baseValues[key]?.trim();
+      if (value == null || value.isEmpty) continue;
+      values[key] = _fsUaePath(_configPath(root, value));
+    }
+    return values;
+  }
+
+  String _fsUaePath(FileSystemEntity entity) {
+    return entity.absolute.path.replaceAll(r'\', '/');
   }
 
   Map<String, String> _displayOverrides(String display) {
