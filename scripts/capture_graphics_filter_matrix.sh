@@ -15,6 +15,7 @@ EVIDENCE_DIR="${ROOT}/evidence/screenshots/graphics-filter-matrix/${RUN_ID}"
 LOG_DIR="${ROOT}/output/logs"
 SCREENSHOT_DIR="${ROOT}/output/screenshots"
 CAPTURE_AT="${CAPTURE_AT:-70}"
+CAPTURE_TIMES="${CAPTURE_TIMES:-$CAPTURE_AT}"
 RUN_SECONDS="${RUN_SECONDS:-76}"
 WINDOW_WIDTH="${WINDOW_WIDTH:-960}"
 WINDOW_HEIGHT="${WINDOW_HEIGHT:-720}"
@@ -27,11 +28,13 @@ Environment:
   FS_UAE_BIN     FS-UAE binary, default: bundled bin/fs-uae/fs-uae or fs-uae
   BASE_CONFIG    source config, default: German intro profile
   CAPTURE_AT     seconds before screenshots, default: 70
+  CAPTURE_TIMES  space-separated screenshot seconds, default: CAPTURE_AT
   RUN_SECONDS    hard stop in seconds, default: 76
   WINDOW_WIDTH   window width, default: 960
   WINDOW_HEIGHT  window height, default: 720
 
 Variants:
+  original retro retro-plus enhanced enhanced-plus
   sharp smooth scanlines crt-effect crt-shader crt-hyllian crt-lottes
   hq2x scale2x scale4xhq xbrz4x xbrz6x super-xbr-3p scalefx
   scanline-3x sharp-bilinear
@@ -61,6 +64,7 @@ fi
 variants=("$@")
 if [ "$#" -eq 0 ]; then
   variants=(
+    original retro retro-plus enhanced enhanced-plus
     sharp smooth scanlines
     crt-effect crt-shader crt-hyllian crt-lottes
     hq2x scale2x scale4xhq
@@ -108,6 +112,45 @@ send_fsuae_screenshot_hotkey() {
 
 variant_options() {
   case "$1" in
+    original)
+      cat <<EOF
+texture_filter = nearest
+smoothing = 0
+scanlines = 0
+EOF
+      ;;
+    retro)
+      cat <<EOF
+texture_filter = nearest
+smoothing = 0
+scanlines = 0
+shader = crt-hyllian
+EOF
+      ;;
+    retro-plus)
+      cat <<EOF
+texture_filter = nearest
+smoothing = 0
+scanlines = 0
+shader = crt-lottes
+EOF
+      ;;
+    enhanced)
+      cat <<EOF
+texture_filter = nearest
+smoothing = 0
+scanlines = 0
+shader = scalefx
+EOF
+      ;;
+    enhanced-plus)
+      cat <<EOF
+texture_filter = nearest
+smoothing = 0
+scanlines = 0
+shader = xbrz6x
+EOF
+      ;;
     sharp)
       cat <<EOF
 texture_filter = nearest
@@ -271,6 +314,7 @@ run_variant() {
     echo "config=${config}"
     echo "started_at=$(date -Is)"
     echo "capture_at=${CAPTURE_AT}"
+    echo "capture_times=${CAPTURE_TIMES}"
     echo "run_seconds=${RUN_SECONDS}"
     echo "window=${WINDOW_WIDTH}x${WINDOW_HEIGHT}"
     echo "fs_uae_bin=${FS_UAE_BIN}"
@@ -282,19 +326,26 @@ run_variant() {
   child_pid=$!
   echo "pid=${child_pid}" >>"${variant_dir}/manifest.txt"
 
-  while [ "$elapsed" -lt "$CAPTURE_AT" ] && kill -0 "$child_pid" 2>/dev/null; do
-    sleep 1
-    elapsed=$((elapsed + 1))
-  done
+  for capture_at in $CAPTURE_TIMES; do
+    while [ "$elapsed" -lt "$capture_at" ] && kill -0 "$child_pid" 2>/dev/null; do
+      sleep 1
+      elapsed=$((elapsed + 1))
+    done
 
-  if kill -0 "$child_pid" 2>/dev/null; then
-    if take_desktop_shot "${variant_dir}/desktop_${CAPTURE_AT}s.png" "$child_pid"; then
-      echo "desktop_screenshot=${variant_dir}/desktop_${CAPTURE_AT}s.png" >>"$event_log"
-    else
-      echo "desktop_screenshot=missing" >>"$event_log"
+    if ! kill -0 "$child_pid" 2>/dev/null; then
+      break
     fi
+
+    if take_desktop_shot "${variant_dir}/desktop_${capture_at}s.png" "$child_pid"; then
+      echo "desktop_screenshot_${capture_at}s=${variant_dir}/desktop_${capture_at}s.png" >>"$event_log"
+    else
+      echo "desktop_screenshot_${capture_at}s=missing" >>"$event_log"
+    fi
+
     send_fsuae_screenshot_hotkey "$event_log"
-  fi
+    sleep 2
+    elapsed=$((elapsed + 2))
+  done
 
   while [ "$elapsed" -lt "$RUN_SECONDS" ] && kill -0 "$child_pid" 2>/dev/null; do
     sleep 1
@@ -340,6 +391,7 @@ mkdir -p "$WORK_DIR" "$EVIDENCE_DIR"
   echo "started_at=$(date -Is)"
   echo "base_config=${BASE_CONFIG}"
   echo "capture_at=${CAPTURE_AT}"
+  echo "capture_times=${CAPTURE_TIMES}"
   echo "run_seconds=${RUN_SECONDS}"
   echo "window=${WINDOW_WIDTH}x${WINDOW_HEIGHT}"
   echo "variants=${variants[*]}"

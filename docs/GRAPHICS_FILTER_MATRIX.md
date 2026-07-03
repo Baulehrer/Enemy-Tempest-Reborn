@@ -40,6 +40,12 @@ XWayland:
 SDL_VIDEODRIVER=x11 ./scripts/capture_graphics_filter_matrix.sh sharp crt-shader crt-hyllian crt-lottes scanline-3x
 ```
 
+For the current launcher presets, capture multiple intro points:
+
+```bash
+CAPTURE_TIMES="32 46 60 70" RUN_SECONDS=76 SDL_VIDEODRIVER=x11 ./scripts/capture_graphics_filter_matrix.sh original retro retro-plus enhanced enhanced-plus
+```
+
 Default source:
 
 ```text
@@ -50,6 +56,15 @@ Default capture point:
 
 ```text
 70 seconds into the German intro
+```
+
+Useful preset review points:
+
+```text
+32 seconds: Anachronia logo / textured red background
+46 seconds: starfield
+60 seconds: ship entry
+70 seconds: fleet / detailed ships
 ```
 
 Default variants:
@@ -138,6 +153,31 @@ OpenGL shader presentation. They are useful for scaler candidates such as
 `scalefx` and `xbrz6x`, but they do not prove CRT/scanline host shaders.
 The XWayland host-window capture in run `20260703T111408+0200` confirms that
 `crt`, `crt-hyllian`, `crt-lottes`, and `scanline-3x` are visibly different.
+
+Concrete tuning notes after the multi-point preset run:
+
+```text
+Original:
+  Keep as default/reference. It is sharp, readable, and least surprising.
+
+Retro:
+  Keep. crt-hyllian gives visible scanlines and a softer monitor feel while
+  preserving logo readability, stars, and ship detail. Best CRT default.
+
+Retro Plus:
+  Keep, but treat as a strong style preset. crt-lottes is darker and has a
+  visible mask/grid. It looks intentionally CRT-like, but can overpower fine
+  artwork and may be too heavy as the default retro mode.
+
+Enhanced:
+  Keep for now. scalefx is a subtle pixel-art improvement; it changes edges
+  without changing the overall look much. It is the safer enhanced preset.
+
+Enhanced Plus:
+  Review later against gameplay or a savestate. xbrz6x is subtly different in
+  the intro, but not clearly stronger than ScaleFX there. It may still be more
+  useful on sprites/HUD in gameplay.
+```
 
 ## Run 20260703T085830+0200
 
@@ -254,4 +294,70 @@ crt-shader   Curved CRT look, strong black border and curvature.
 crt-hyllian  Clean scanlines with moderate CRT feel; best first CRT candidate.
 crt-lottes   Strong mask/CRT look, darker and more stylized.
 scanline-3x  Simple scanlines, less character than CRT Hyllian.
+```
+
+## Run 20260703T123254+0200
+
+Current launcher preset run with host-window capture through XWayland:
+
+```bash
+CAPTURE_TIMES="32 46 60 70" RUN_SECONDS=76 SDL_VIDEODRIVER=x11 ./scripts/capture_graphics_filter_matrix.sh original retro retro-plus enhanced enhanced-plus
+```
+
+Evidence:
+
+```text
+evidence/screenshots/graphics-filter-matrix/20260703T123254+0200/
+```
+
+Result:
+
+- All five launcher presets reached all four capture points.
+- Host screenshots were captured as `desktop_32s.png`, `desktop_46s.png`,
+  `desktop_60s.png`, and `desktop_70s.png`.
+- `Retro` and `Retro Plus` are strongly visible at every point.
+- `Enhanced` and `Enhanced Plus` are subtle and mostly affect edges/details.
+
+ImageMagick absolute-error comparison against `Original` host screenshots:
+
+```text
+32s:
+  retro          567986
+  retro-plus     574412
+  enhanced        25530
+  enhanced-plus   24929
+
+46s:
+  retro          572211
+  retro-plus     574644
+  enhanced         7556
+  enhanced-plus    6842
+
+60s:
+  retro          572284
+  retro-plus     574662
+  enhanced        14480
+  enhanced-plus   11788
+
+70s:
+  retro          572681
+  retro-plus     574799
+  enhanced        55403
+  enhanced-plus   47257
+```
+
+Visual notes:
+
+```text
+32s logo:
+  Original is crisp and clean.
+  Retro is readable and convincingly CRT-like.
+  Retro Plus is much stronger, with obvious mask/grid and heavier color shift.
+  Enhanced is almost original, with slightly softened pixel-art edges.
+
+70s fleet:
+  Retro keeps stars and ships readable while adding a monitor look.
+  Retro Plus is dramatic, darker, and more stylized.
+  Enhanced and Enhanced Plus are both subtle; ScaleFX currently reads as the
+  safer enhanced option.
 ```
