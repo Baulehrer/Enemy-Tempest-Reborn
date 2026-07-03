@@ -43,6 +43,7 @@ Siehe:
 - `docs/GRAPHICS_BASELINE.md`
 - `docs/GRAPHICS_FILTER_CHECK.md`
 - `docs/GRAPHICS_FILTER_MATRIX.md`
+- `docs/RELEASE_PACKAGING.md`
 - `LICENSES.md`
 
 ## Schnelltest
@@ -106,3 +107,15 @@ flutter build linux
 
 Alle drei Pruefungen waren am 2026-07-01 nach Einbau der Launcher-Preflight-
 Checks erfolgreich.
+
+## Release-Pakete
+
+Portable Pakete werden gebaut mit:
+
+```bash
+VERSION=v0.2.0-dev ./scripts/package_linux_x64.sh
+```
+
+Windows- und macOS-Pakete entstehen auf den jeweiligen nativen Runnern ueber
+`.github/workflows/build-release-packages.yml`. Details stehen in
+`docs/RELEASE_PACKAGING.md`.

@@ -42,6 +42,7 @@ See:
 - `docs/GRAPHICS_BASELINE.md`
 - `docs/GRAPHICS_FILTER_CHECK.md`
 - `docs/GRAPHICS_FILTER_MATRIX.md`
+- `docs/RELEASE_PACKAGING.md`
 - `LICENSES.md`
 
 ## Quick Test
@@ -101,6 +102,18 @@ flutter build linux
 ```
 
 All three passed on 2026-07-01 after adding launcher preflight checks.
+
+## Release Packages
+
+Portable packages are built with:
+
+```bash
+VERSION=v0.2.0-dev ./scripts/package_linux_x64.sh
+```
+
+Windows and macOS packages are built on their native runners via
+`.github/workflows/build-release-packages.yml`. See
+`docs/RELEASE_PACKAGING.md`.
 
 ## Repository Name Note
 

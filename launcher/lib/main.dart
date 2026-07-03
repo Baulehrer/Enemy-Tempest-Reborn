@@ -182,15 +182,6 @@ class _LauncherScreenState extends State<LauncherScreen> {
     }
 
     final selected = _selected;
-    if (!Platform.isLinux) {
-      setState(() {
-        _status = _english
-            ? 'This platform still needs a runner.'
-            : 'Diese Plattform braucht noch einen Runner.';
-      });
-      return;
-    }
-
     final root = _projectRoot();
     final baseConfig = _baseConfigFile(root, selected);
     final fsUae = _fsUaeExecutable(root);
@@ -324,7 +315,8 @@ class _LauncherScreenState extends State<LauncherScreen> {
         final file = File(command);
         return file.existsSync();
       }
-      final result = await Process.run('which', [command]);
+      final finder = Platform.isWindows ? 'where' : 'which';
+      final result = await Process.run(finder, [command]);
       return result.exitCode == 0;
     } on Object {
       return false;
@@ -332,20 +324,25 @@ class _LauncherScreenState extends State<LauncherScreen> {
   }
 
   String _fsUaeExecutable(Directory root) {
+    final executableName = Platform.isWindows ? 'fs-uae.exe' : 'fs-uae';
     final bundled = File(
-      '${root.path}${Platform.pathSeparator}bin${Platform.pathSeparator}fs-uae${Platform.pathSeparator}fs-uae',
+      '${root.path}${Platform.pathSeparator}bin${Platform.pathSeparator}fs-uae${Platform.pathSeparator}$executableName',
     );
     if (bundled.existsSync()) return bundled.path;
-    return 'fs-uae';
+    return executableName;
   }
 
   Future<void> _openCartographer() async {
-    if (!Platform.isLinux) {
-      setState(() => _status = 'Cartographer: $cartographerUrl');
-      return;
-    }
     try {
-      await Process.start('xdg-open', [cartographerUrl]);
+      final command = Platform.isWindows
+          ? 'cmd'
+          : Platform.isMacOS
+          ? 'open'
+          : 'xdg-open';
+      final args = Platform.isWindows
+          ? ['/c', 'start', '', cartographerUrl]
+          : [cartographerUrl];
+      await Process.start(command, args);
       setState(() {
         _status = _english
             ? 'Cartographer opened in browser.'
@@ -369,6 +366,14 @@ class _LauncherScreenState extends State<LauncherScreen> {
       '${current.path}${Platform.pathSeparator}launcher',
     );
     if (launcherChild.existsSync()) return current;
+    final executableDir = File(Platform.resolvedExecutable).parent;
+    if (executableDir.path.endsWith('${Platform.pathSeparator}launcher')) {
+      return executableDir.parent;
+    }
+    final executableLauncherChild = Directory(
+      '${executableDir.path}${Platform.pathSeparator}launcher',
+    );
+    if (executableLauncherChild.existsSync()) return executableDir;
     return File(Platform.resolvedExecutable).parent.parent.parent.parent;
   }
 
