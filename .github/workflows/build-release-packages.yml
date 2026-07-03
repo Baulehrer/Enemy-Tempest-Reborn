@@ -75,10 +75,19 @@ jobs:
           $version = "${{ github.event.inputs.version }}"
           if ([string]::IsNullOrWhiteSpace($version)) { $version = "${env:GITHUB_REF_NAME}" }
           if ([string]::IsNullOrWhiteSpace($version)) { $version = "v0.5" }
-          $searchRoots = @("${env:ProgramFiles}", "${env:ProgramFiles(x86)}", "C:\tools") | Where-Object { Test-Path $_ }
-          $fsUae = Get-ChildItem -Path $searchRoots -Filter "fs-uae.exe" -Recurse -ErrorAction SilentlyContinue | Select-Object -First 1
+          $fsUae = Get-Command "fs-uae.exe" -ErrorAction SilentlyContinue
+          if (-not $fsUae) {
+            $candidatePaths = @(
+              "${env:ProgramFiles}\FS-UAE\fs-uae.exe",
+              "${env:ProgramFiles(x86)}\FS-UAE\fs-uae.exe",
+              "C:\Program Files\FS-UAE\fs-uae.exe",
+              "C:\Program Files (x86)\FS-UAE\fs-uae.exe"
+            )
+            $fsUae = $candidatePaths | Where-Object { Test-Path $_ } | Select-Object -First 1
+          }
           if ($fsUae) {
-            .\scripts\package_windows_installer.ps1 -Version $version -FsUaeBundleBin $fsUae.FullName
+            $fsUaePath = if ($fsUae.Source) { $fsUae.Source } else { [string]$fsUae }
+            .\scripts\package_windows_installer.ps1 -Version $version -FsUaeBundleBin $fsUaePath
           } else {
             .\scripts\package_windows_installer.ps1 -Version $version
           }
