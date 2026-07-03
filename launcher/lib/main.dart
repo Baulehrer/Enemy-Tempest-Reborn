@@ -86,12 +86,26 @@ class LauncherScreen extends StatefulWidget {
 class _LauncherScreenState extends State<LauncherScreen> {
   static const appVersion = '0.2.0-dev';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
+  static const graphicsPresets = [
+    'Original',
+    'Retro',
+    'Retro Plus',
+    'Enhanced',
+    'Enhanced Plus',
+  ];
+  static const graphicsShaderLabels = {
+    'Original': 'nearest',
+    'Retro': 'crt-hyllian',
+    'Retro Plus': 'crt-lottes',
+    'Enhanced': 'scalefx',
+    'Enhanced Plus': 'xbrz6x',
+  };
 
   TargetKind _target = TargetKind.enemy1;
   LanguageChoice _language = LanguageChoice.de;
   String _display = 'Fullscreen';
   String _aspect = '4:3';
-  String _pixels = 'Sharp';
+  String _pixels = 'Original';
   String _control = 'Keyboard';
   String _status = '';
   bool _busy = false;
@@ -384,9 +398,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
         _aspect =
             _allowed(data['aspect'], const ['4:3', 'Pixel', 'Stretch']) ??
             _aspect;
-        _pixels =
-            _allowed(data['pixels'], const ['Sharp', 'Smooth', 'CRT']) ??
-            _pixels;
+        _pixels = _normalisePixels(data['pixels']) ?? _pixels;
         _control =
             _allowed(data['control'], const [
               'Keyboard',
@@ -412,6 +424,17 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
   String? _allowed(Object? value, List<String> allowed) {
     return value is String && allowed.contains(value) ? value : null;
+  }
+
+  String? _normalisePixels(Object? value) {
+    if (value is! String) return null;
+    if (graphicsPresets.contains(value)) return value;
+    return switch (value) {
+      'Sharp' => 'Original',
+      'Smooth' => 'Enhanced',
+      'CRT' => 'Retro',
+      _ => null,
+    };
   }
 
   TargetKind? _targetFromName(Object? value) {
@@ -500,7 +523,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
       'enemy_mode': selected.mode,
       'enemy_display': _display.toLowerCase(),
       'enemy_aspect': _aspect.toLowerCase(),
-      'enemy_pixels': _pixels.toLowerCase(),
+      'enemy_pixels': _pixels.toLowerCase().replaceAll(' ', '_'),
       'enemy_control': _control.toLowerCase(),
       ..._displayOverrides(_display),
       ..._aspectOverrides(_aspect),
@@ -538,21 +561,39 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
   Map<String, String> _pixelOverrides(String pixels) {
     return switch (pixels) {
-      'Smooth' => {
-        'texture_filter': 'linear',
-        'smoothing': '1',
-        'enemy_filter': 'linear',
-      },
-      'CRT' => {
+      'Retro' => {
         'texture_filter': 'nearest',
         'smoothing': '0',
-        'scanlines': '1',
-        'enemy_filter': 'crt',
+        'scanlines': '0',
+        'shader': 'crt-hyllian',
+        'enemy_filter': 'crt_hyllian',
+      },
+      'Retro Plus' => {
+        'texture_filter': 'nearest',
+        'smoothing': '0',
+        'scanlines': '0',
+        'shader': 'crt-lottes',
+        'enemy_filter': 'crt_lottes',
+      },
+      'Enhanced' => {
+        'texture_filter': 'nearest',
+        'smoothing': '0',
+        'scanlines': '0',
+        'shader': 'scalefx',
+        'enemy_filter': 'scalefx',
+      },
+      'Enhanced Plus' => {
+        'texture_filter': 'nearest',
+        'smoothing': '0',
+        'scanlines': '0',
+        'shader': 'xbrz6x',
+        'enemy_filter': 'xbrz6x',
       },
       _ => {
         'texture_filter': 'nearest',
         'smoothing': '0',
-        'enemy_filter': 'nearest',
+        'scanlines': '0',
+        'enemy_filter': 'original',
       },
     };
   }
@@ -1431,9 +1472,10 @@ class _SettingsBox extends StatelessWidget {
               onChanged: onAspectChanged,
             ),
             _OptionLine(
-              label: english ? 'Pixels' : 'Pixel',
+              label: english ? 'Preset' : 'Preset',
               value: pixels,
-              values: const ['Sharp', 'Smooth', 'CRT'],
+              values: _LauncherScreenState.graphicsPresets,
+              captions: _LauncherScreenState.graphicsShaderLabels,
               onChanged: onPixelsChanged,
             ),
             _OptionLine(
@@ -1455,12 +1497,14 @@ class _OptionLine extends StatelessWidget {
     required this.value,
     required this.values,
     required this.onChanged,
+    this.captions = const {},
   });
 
   final String label;
   final String value;
   final List<String> values;
   final ValueChanged<String> onChanged;
+  final Map<String, String> captions;
 
   @override
   Widget build(BuildContext context) {
@@ -1486,6 +1530,7 @@ class _OptionLine extends StatelessWidget {
                 InkWell(
                   onTap: () => onChanged(item),
                   child: Container(
+                    constraints: const BoxConstraints(minWidth: 82),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 9,
                       vertical: 6,
@@ -1496,15 +1541,37 @@ class _OptionLine extends StatelessWidget {
                           : Colors.black,
                       border: Border.all(color: SiteColors.line),
                     ),
-                    child: Text(
-                      item,
-                      style: TextStyle(
-                        color: item == value
-                            ? SiteColors.white
-                            : SiteColors.blueText,
-                        fontWeight: FontWeight.w800,
-                        fontSize: 12,
-                      ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          item,
+                          style: TextStyle(
+                            color: item == value
+                                ? SiteColors.white
+                                : SiteColors.blueText,
+                            fontWeight: FontWeight.w800,
+                            fontSize: 12,
+                          ),
+                        ),
+                        if (captions[item] case final caption?)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 2),
+                            child: Text(
+                              caption,
+                              style: TextStyle(
+                                color:
+                                    (item == value
+                                            ? SiteColors.white
+                                            : SiteColors.blueText)
+                                        .withValues(alpha: 0.72),
+                                fontWeight: FontWeight.w700,
+                                fontSize: 8,
+                              ),
+                            ),
+                          ),
+                      ],
                     ),
                   ),
                 ),

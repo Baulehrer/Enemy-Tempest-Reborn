@@ -23,6 +23,15 @@ void main() {
     expect(find.text('ABOUT'), findsOneWidget);
     expect(find.text('SPIEL STARTEN'), findsOneWidget);
     expect(find.text('KNOWN GOOD'), findsNothing);
+    expect(find.text('Original'), findsOneWidget);
+    expect(find.text('Retro'), findsOneWidget);
+    expect(find.text('Retro Plus'), findsOneWidget);
+    expect(find.text('Enhanced'), findsOneWidget);
+    expect(find.text('Enhanced Plus'), findsOneWidget);
+    expect(find.text('crt-hyllian'), findsOneWidget);
+    expect(find.text('crt-lottes'), findsOneWidget);
+    expect(find.text('scalefx'), findsOneWidget);
+    expect(find.text('xbrz6x'), findsOneWidget);
 
     await tester.tap(find.text('ABOUT'));
     await tester.pumpAndSettle();

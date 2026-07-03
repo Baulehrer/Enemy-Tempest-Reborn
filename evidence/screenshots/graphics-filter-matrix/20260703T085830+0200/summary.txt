@@ -1,0 +1,8 @@
+sharp        timeout_terminated
+smooth       timeout_terminated
+scanlines    timeout_terminated
+crt-effect   timeout_terminated
+hq2x         timeout_terminated
+scale2x      timeout_terminated
+xbrz4x       timeout_terminated
+scalefx      timeout_terminated

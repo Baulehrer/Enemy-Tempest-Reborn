@@ -42,6 +42,7 @@ Siehe:
 - `docs/RELEASE_v0.2.0-preview4.md`
 - `docs/GRAPHICS_BASELINE.md`
 - `docs/GRAPHICS_FILTER_CHECK.md`
+- `docs/GRAPHICS_FILTER_MATRIX.md`
 - `LICENSES.md`
 
 ## Schnelltest
@@ -79,7 +80,7 @@ Aktuelle Launcher-Einstellungen:
 
 - `Anzeige`: `Fullscreen` oder `Window`
 - `Aspect`: `4:3`, `Pixel` oder `Stretch`
-- `Pixel`: `Sharp`, `Smooth` oder `CRT`
+- `Preset`: `Original`, `Retro`, `Retro Plus`, `Enhanced` oder `Enhanced Plus`
 - `Steuerung`: `Keyboard`, `Gamepad` oder `Joystick`
 
 Die Tastatursteuerung legt Cursor-Tasten und WASD auf die Joystick-Richtungen.

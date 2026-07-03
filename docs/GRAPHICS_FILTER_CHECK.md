@@ -2,14 +2,14 @@
 
 Date: 2026-07-02
 
-This check verifies whether the current launcher `Pixels` options already
-produce visible FS-UAE filtering.
+This check verified whether the early launcher `Pixels` options already
+produced visible FS-UAE filtering.
 
 ## Result
 
 No visible filtering difference was proven with the current options.
 
-The launcher currently writes:
+The early launcher wrote:
 
 ```text
 Sharp  -> texture_filter = nearest, smoothing = 0
@@ -26,6 +26,16 @@ smoothing = 0
 
 This makes the packaged profiles deterministic even when they are launched
 outside the Flutter launcher.
+
+The current launcher exposes player-facing graphics presets instead:
+
+```text
+Original       -> texture_filter = nearest, smoothing = 0
+Retro          -> shader = crt-hyllian
+Retro Plus     -> shader = crt-lottes
+Enhanced       -> shader = scalefx
+Enhanced Plus  -> shader = xbrz6x
+```
 
 FS-UAE accepted these keys in the temporary configs, but internal FS-UAE
 screenshots for the same intro frame were byte-identical across all three
@@ -98,3 +108,10 @@ gfx_filter_keep_aspect
 
 If those options do not produce controllable, high-quality output, the graphics
 enhancement work should move into the planned FS-UAE fork/render-path changes.
+
+The follow-up matrix is documented in `docs/GRAPHICS_FILTER_MATRIX.md` and can
+be generated with:
+
+```bash
+./scripts/capture_graphics_filter_matrix.sh
+```

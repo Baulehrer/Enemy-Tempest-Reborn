@@ -41,6 +41,7 @@ See:
 - `docs/RELEASE_v0.2.0-preview4.md`
 - `docs/GRAPHICS_BASELINE.md`
 - `docs/GRAPHICS_FILTER_CHECK.md`
+- `docs/GRAPHICS_FILTER_MATRIX.md`
 - `LICENSES.md`
 
 ## Quick Test
@@ -76,7 +77,7 @@ Launcher settings currently include:
 
 - `Display`: `Fullscreen` or `Window`
 - `Aspect`: `4:3`, `Pixel`, or `Stretch`
-- `Pixels`: `Sharp`, `Smooth`, or `CRT`
+- `Preset`: `Original`, `Retro`, `Retro Plus`, `Enhanced`, or `Enhanced Plus`
 - `Control`: `Keyboard`, `Gamepad`, or `Joystick`
 
 Keyboard control maps cursor keys and WASD to joystick directions. `Space`,
