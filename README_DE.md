@@ -1,121 +1,71 @@
 # Enemy: Tempest Reborn
 
-Dieses Repository buendelt die aktuelle AROS/UAE-Kompatibilitaetsarbeit fuer
-Enemy: Tempest Reborn. Enthalten sind die fuer dieses Projekt bereitgestellten
-originalen Enemy-ADFs, die verwendeten AROS-ROMs, reproduzierbare
-ADF-Patch-Skripte, vorbereitete gepatchte Enemy-ADF-Varianten,
-FS-UAE-Konfigurationen und der erste hostseitige Flutter-Launcher.
+Version 0.6
 
-## Aktueller Stand
+Enemy: Tempest Reborn ist ein einfaches Launcher-Paket, um Enemy 1 und Enemy 2
+ueber FS-UAE zu spielen. Ziel ist ein unkomplizierter Start mit klarem Menue,
+vorbereiteten Einstellungen und einigen Grafik-Presets.
 
-- Enemy V2 startet unter AROS, wenn als A1200 mit 2 MB Chip RAM und 2 MB Fast
-  RAM ausgefuehrt.
-- Der sauberste getestete Pfad nutzt eine Enemy-ADF-Variante, in der der Helper
-  `c/closewb` seine Vorbereitung und Stack-Bereinigung beibehaelt, aber den
-  einzelnen `CloseWindow()`-Aufruf durch zwei 68k-NOP-Instruktionen ersetzt.
-- Mit diesem `closewb`-NOP-Patch laesst sich die Intro per Maus/Feuer abbrechen,
-  und das Hauptmenü rendert korrekt.
-- Enemy 1 ist in getrennte Startziele fuer Spiel und Intro aufgeteilt. Das
-  Spielziel ueberspringt das Intro; das Intro-Ziel kehrt nach Eingabe/Ende zum
-  Host-Launcher zurueck.
-- Enemy 1/2 DE/EN nutzen vorbereitete Level-Unlock-Images: Im Menue steht
-  weiter Level 1, die hoechste Levelauswahl ist aber ohne Passwort freigeschaltet.
-- Der Launcher startet standardmaessig im Fullscreen und mit FS-UAE
-  `zoom = auto`, also mit automatischem Amiga-Viewport-Cropping.
-- Das Linux-Paket `v0.2.0-preview4` enthaelt ein unveraendertes FS-UAE 3.2.35
-  samt Runtime-Daten. Fuer dieses Paket muss FS-UAE nicht separat im System
-  installiert sein.
+![Enemy: Tempest Reborn Launcher](docs/images/tempest-reborn-launcher.png)
 
-Siehe:
+![Enemy: Tempest Reborn Start-Splash](docs/images/tempest-reborn-splash.png)
 
-- `docs/CLOSEWB_NOP_FIX_DE.md`
-- `docs/CLOSEWB_NOP_FIX_EN.md`
-- `docs/TECHNICAL_ARTIFACTS.md`
-- `docs/CLEAN_CLONE_RELEASE_TEST.md`
-- `docs/ROADMAP_v0.2.0.md`
-- `docs/FS_UAE_BUNDLING_STRATEGY.md`
-- `docs/BUNDLED_FS_UAE_DEV_PACKAGE_TEST.md`
-- `docs/KEYBOARD_CONTROLS.md`
-- `docs/RELEASE_v0.2.0-preview1.md`
-- `docs/RELEASE_v0.2.0-preview2.md`
-- `docs/RELEASE_v0.2.0-preview3.md`
-- `docs/RELEASE_v0.2.0-preview4.md`
-- `docs/GRAPHICS_BASELINE.md`
-- `docs/GRAPHICS_FILTER_CHECK.md`
-- `docs/GRAPHICS_FILTER_MATRIX.md`
-- `docs/RELEASE_PACKAGING.md`
-- `LICENSES.md`
+## Features
 
-## Schnelltest
+- Enemy 1: Tempest of Violence
+- Enemy 2: Missing in Action
+- Deutsche und englische Spielversionen
+- Separater Enemy-1-Intro-Start
+- Fullscreen als Standard
+- Vorbereitete Grafik-Presets:
+  - Original
+  - Retro
+  - Retro Plus
+  - Enhanced
+  - Enhanced Plus
+- Tastatur-, Joystick- und Gamepad-Profile
+- Levelauswahl fuer normales Spielen vorbereitet
+- Kurzer Start-Splash, waehrend das Amiga-System startet
+- Windows-Installer
+- Linux-AppImage
+- Portable Pakete fuer Linux, Windows und macOS
 
-Host-Launcher unter Linux starten:
+## Das Menue
 
-```bash
-cd launcher
-flutter run -d linux
-```
+Im Menue waehlst du Spiel, Sprache, Grafik-Preset, Bildschirmmodus und
+Steuerung, bevor FS-UAE gestartet wird.
 
-Beim gepackten Preview-Release das Linux-Archiv entpacken und starten:
+Enemy 1 startet direkt ins Spielmenue. Das Intro ist ein eigener Menuepunkt,
+damit der Spielstart schnell bleibt und das Intro trotzdem jederzeit verfuegbar
+ist.
 
-```bash
-./run-linux.sh
-```
+Die Grafik-Presets sind bewusst einfach gehalten:
 
-Oder ein Profil direkt mit FS-UAE starten:
+- Original zeigt den klassischen scharfen Look.
+- Retro nutzt eine CRT-artige Darstellung.
+- Enhanced glaettet die Pixelgrafik staerker.
 
-```text
-configs/fs-uae/tempestreborn_enemy1_de_a1200.fs-uae
-```
+## Steuerung
 
-Die Tempest-Reborn-Konfigurationen nutzen relative Pfade ab Repository-Wurzel.
-Der Launcher schreibt Runtime-Konfigurationen nach `work/launcher-runtime/` und
-setzt die gewaehlten Anzeige-/Aspect-/Filter-/Steuerungsoptionen vor dem
-FS-UAE-Start.
-Vor dem Start prueft der Launcher das mitgelieferte oder systemweite `fs-uae`,
-das gewaehlte Basisprofil, die AROS-ROMs und die benoetigten Enemy-
-Diskettenimages. Fehlende Laufzeitdateien werden im Statusbereich des Launchers
-gemeldet. Der Launcher bevorzugt ein mitgeliefertes `bin/fs-uae/fs-uae` und
-faellt nur sonst auf das systemweite `fs-uae` zurueck.
+Tastatur, Joystick und Gamepad koennen im Menue ausgewaehlt werden. Die
+Tastatur nutzt Cursor-Tasten und WASD fuer Bewegung. Gamepad und Joystick sind
+naeher am klassischen Amiga-Spielgefuehl.
 
-Aktuelle Launcher-Einstellungen:
+## Release-Pipeline
 
-- `Anzeige`: `Fullscreen` oder `Window`
-- `Aspect`: `4:3`, `Pixel` oder `Stretch`
-- `Preset`: `Original`, `Retro`, `Retro Plus`, `Enhanced` oder `Enhanced Plus`
-- `Steuerung`: `Keyboard`, `Gamepad` oder `Joystick`
+Das Projekt nutzt GitHub Actions fuer die Release-Pakete. Ein Release-Tag
+startet die Paket-Builds fuer Linux, Windows und macOS. Die Pipeline erzeugt
+portable Archive, das Linux-AppImage und den Windows-Installer und laedt alles
+in das GitHub-Release hoch.
 
-Die Tastatursteuerung legt Cursor-Tasten und WASD auf die Joystick-Richtungen.
-`Space`, rechte `Ctrl`, rechte `Alt` und rechte `Shift` sind Feuer. Joystick
-bleibt originalnah bei Richtung plus Feuer, mit `H` als Amiga-`HELP`. Gamepad
-legt `L1` auf Pause, `R1` auf Hilfe und `L2`/`R2`/`Select` auf Replay. Die
-originalen Enemy-Tasten wie `P`, `R`, `Backspace`, `Delete` und `Esc` bleiben
-verfuegbar.
+## Dank
 
-Das Launcher-Menue ist zweisprachig. Bei Umschaltung auf Englisch wechseln auch
-die Menue-Texte.
+Danke an das AROS-Projekt fuer die freie Amiga-kompatible Systemarbeit, die
+dieses Paket moeglich macht.
 
-## Verifikation
+Besonderer Dank an André Wüthrich <anachronia@gmail.com> fuer Enemy und
+Anachronia.
 
-Aktuelle lokale Pruefungen:
+## Lizenz
 
-```bash
-cd launcher
-flutter analyze
-flutter test
-flutter build linux
-```
-
-Alle drei Pruefungen waren am 2026-07-01 nach Einbau der Launcher-Preflight-
-Checks erfolgreich.
-
-## Release-Pakete
-
-Portable Pakete werden gebaut mit:
-
-```bash
-VERSION=v0.5 ./scripts/package_linux_x64.sh
-```
-
-Windows- und macOS-Pakete entstehen auf den jeweiligen nativen Runnern ueber
-`.github/workflows/build-release-packages.yml`. Details stehen in
-`docs/RELEASE_PACKAGING.md`.
+Siehe `LICENSES.md` fuer die enthaltenen Lizenzen und Hinweise zu Drittteilen.

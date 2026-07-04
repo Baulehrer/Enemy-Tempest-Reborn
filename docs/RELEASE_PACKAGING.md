@@ -7,14 +7,14 @@ FS-UAE profiles, documentation, and runtime folders.
 ## Local Linux build
 
 ```bash
-VERSION=v0.5 ./scripts/package_linux_x64.sh
+VERSION=v0.6 ./scripts/package_linux_x64.sh
 ```
 
 If `FS_UAE_BUNDLE_BIN` points to an executable FS-UAE binary, the package
 includes it as `bin/fs-uae/fs-uae`.
 
 ```bash
-VERSION=v0.5 \
+VERSION=v0.6 \
 FS_UAE_BUNDLE_BIN="$(command -v fs-uae)" \
 ./scripts/package_linux_x64.sh
 ```
@@ -27,7 +27,7 @@ Output:
 To also create a Linux AppImage, install `appimagetool` and run:
 
 ```bash
-VERSION=v0.5 \
+VERSION=v0.6 \
 FS_UAE_BUNDLE_BIN="$(command -v fs-uae)" \
 APPIMAGETOOL=appimagetool \
 ./scripts/package_linux_appimage.sh
@@ -43,7 +43,7 @@ Additional output:
 Windows packages must be built on Windows:
 
 ```powershell
-.\scripts\package_windows_x64.ps1 -Version v0.5
+.\scripts\package_windows_x64.ps1 -Version v0.6
 ```
 
 If an FS-UAE binary is supplied, it is copied to
@@ -51,7 +51,7 @@ If an FS-UAE binary is supplied, it is copied to
 
 ```powershell
 .\scripts\package_windows_x64.ps1 `
-  -Version v0.5 `
+  -Version v0.6 `
   -FsUaeBundleBin "C:\Program Files\FS-UAE\fs-uae.exe"
 ```
 
@@ -64,7 +64,7 @@ To create the Inno Setup installer as well, install Inno Setup 6 and run:
 
 ```powershell
 .\scripts\package_windows_installer.ps1 `
-  -Version v0.5 `
+  -Version v0.6 `
   -FsUaeBundleBin "C:\Program Files\FS-UAE\fs-uae.exe"
 ```
 
@@ -78,7 +78,7 @@ Additional output:
 macOS packages must be built on macOS:
 
 ```bash
-VERSION=v0.5 ./scripts/package_macos_universal.sh
+VERSION=v0.6 ./scripts/package_macos_universal.sh
 ```
 
 If `FS_UAE_BUNDLE_BIN` points to an executable FS-UAE binary, the package

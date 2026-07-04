@@ -38,6 +38,6 @@ void main() {
 
     expect(find.text('INFO'), findsOneWidget);
     expect(find.text('Enemy: Tempest Reborn'), findsOneWidget);
-    expect(find.text('0.5'), findsOneWidget);
+    expect(find.text('0.6'), findsOneWidget);
   });
 }

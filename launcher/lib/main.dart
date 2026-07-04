@@ -84,8 +84,9 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.5';
+  static const appVersion = '0.6';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
+  static const launchSplashAsset = 'assets/images/launch-splash-boxart.jpeg';
   static const graphicsPresets = [
     'Original',
     'Retro',
@@ -109,6 +110,8 @@ class _LauncherScreenState extends State<LauncherScreen> {
   String _control = 'Keyboard';
   String _status = '';
   bool _busy = false;
+  bool _showLaunchSplash = false;
+  int _launchSplashToken = 0;
 
   @override
   void initState() {
@@ -194,10 +197,12 @@ class _LauncherScreenState extends State<LauncherScreen> {
 
     setState(() {
       _busy = true;
+      _showLaunchSplash = true;
       _status = _english
           ? 'Starting ${selected.subtitle} ${_languageCode.toUpperCase()}...'
           : 'Starte ${selected.subtitle} ${_languageCode.toUpperCase()}...';
     });
+    final splashToken = ++_launchSplashToken;
 
     try {
       final runtimeConfig = await _writeRuntimeConfig(
@@ -217,6 +222,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
         process.stdout.drain<void>();
         process.stderr.drain<void>();
       }
+      _hideLaunchSplashLater(splashToken, _launchSplashDuration(selected));
       if (selected.mode == 'intro') {
         await process.exitCode;
         if (mounted) {
@@ -233,6 +239,8 @@ class _LauncherScreenState extends State<LauncherScreen> {
       }
     } on Object catch (error) {
       setState(() {
+        _showLaunchSplash = false;
+        _launchSplashToken++;
         _status = _english
             ? 'Launch failed: $error'
             : 'Start fehlgeschlagen: $error';
@@ -240,6 +248,22 @@ class _LauncherScreenState extends State<LauncherScreen> {
     } finally {
       if (mounted) setState(() => _busy = false);
     }
+  }
+
+  Duration _launchSplashDuration(LauncherTarget selected) {
+    if (selected.mode == 'intro') return const Duration(seconds: 15);
+    return switch (selected.game) {
+      'enemy1' => const Duration(seconds: 19),
+      'enemy2' => const Duration(seconds: 14),
+      _ => const Duration(seconds: 5),
+    };
+  }
+
+  void _hideLaunchSplashLater(int token, Duration duration) {
+    Future<void>.delayed(duration, () {
+      if (!mounted || token != _launchSplashToken) return;
+      setState(() => _showLaunchSplash = false);
+    });
   }
 
   Future<PreflightResult> _runPreflight(
@@ -837,7 +861,111 @@ class _LauncherScreenState extends State<LauncherScreen> {
               ),
             ],
           ),
+          if (_showLaunchSplash)
+            const Positioned.fill(
+              child: _LaunchSplash(asset: launchSplashAsset),
+            ),
         ],
+      ),
+    );
+  }
+}
+
+class _LaunchSplash extends StatelessWidget {
+  const _LaunchSplash({required this.asset});
+
+  final String asset;
+
+  @override
+  Widget build(BuildContext context) {
+    return IgnorePointer(
+      child: DecoratedBox(
+        decoration: const BoxDecoration(color: Color(0xf5050509)),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Image.asset(asset, fit: BoxFit.cover),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x99000000),
+                    Color(0x22000000),
+                    Color(0xcc000000),
+                  ],
+                ),
+              ),
+            ),
+            Center(
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 760),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 26,
+                    vertical: 20,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xdd111326),
+                    border: Border.all(color: SiteColors.line, width: 1),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0xaa000000),
+                        blurRadius: 18,
+                        offset: Offset(0, 8),
+                      ),
+                    ],
+                  ),
+                  child: const Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'ENEMY: TEMPEST REBORN',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: SiteColors.blueText,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2.8,
+                          shadows: [
+                            Shadow(
+                              color: Colors.black,
+                              blurRadius: 8,
+                              offset: Offset(3, 3),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'STARTING FS-UAE',
+                        style: TextStyle(
+                          color: SiteColors.pink,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const Positioned(
+              left: 26,
+              right: 26,
+              bottom: 24,
+              child: LinearProgressIndicator(
+                minHeight: 3,
+                backgroundColor: Color(0x66000000),
+                color: SiteColors.linkBlue,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
