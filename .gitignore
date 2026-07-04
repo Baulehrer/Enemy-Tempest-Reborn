@@ -1,5 +1,6 @@
 output/
 dist/
+work/launcher-runtime/
 *.uae
 *.sdf
 __pycache__/

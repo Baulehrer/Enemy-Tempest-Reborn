@@ -6,7 +6,9 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   setUp(() {
-    final settings = File('../work/launcher-runtime/settings.json');
+    final settings = File(
+      '${Platform.environment['HOME']}/.local/share/enemy-tempest-reborn/settings.json',
+    );
     if (settings.existsSync()) settings.deleteSync();
   });
 
@@ -38,6 +40,6 @@ void main() {
 
     expect(find.text('INFO'), findsOneWidget);
     expect(find.text('Enemy: Tempest Reborn'), findsOneWidget);
-    expect(find.text('0.6'), findsOneWidget);
+    expect(find.text('0.6.1'), findsOneWidget);
   });
 }

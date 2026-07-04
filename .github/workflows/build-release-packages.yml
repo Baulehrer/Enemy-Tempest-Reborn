@@ -9,7 +9,7 @@ on:
       version:
         description: Release/package version
         required: false
-        default: v0.6
+        default: v0.6.1
   push:
     tags:
       - "v*"
@@ -37,7 +37,7 @@ jobs:
         shell: bash
         run: |
           version="${{ github.event.inputs.version }}"
-          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.6}"; fi
+          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.6.1}"; fi
           fs_uae="$(command -v fs-uae || true)"
           if [ -n "$fs_uae" ]; then
             VERSION="$version" FS_UAE_BUNDLE_BIN="$fs_uae" APPIMAGETOOL="$PWD/appimagetool-x86_64.AppImage" ./scripts/package_linux_appimage.sh
@@ -74,22 +74,31 @@ jobs:
         run: |
           $version = "${{ github.event.inputs.version }}"
           if ([string]::IsNullOrWhiteSpace($version)) { $version = "${env:GITHUB_REF_NAME}" }
-          if ([string]::IsNullOrWhiteSpace($version)) { $version = "v0.6" }
+          if ([string]::IsNullOrWhiteSpace($version)) { $version = "v0.6.1" }
           $fsUae = Get-Command "fs-uae.exe" -ErrorAction SilentlyContinue
           if (-not $fsUae) {
             $candidatePaths = @(
               "${env:ProgramFiles}\FS-UAE\fs-uae.exe",
               "${env:ProgramFiles(x86)}\FS-UAE\fs-uae.exe",
               "C:\Program Files\FS-UAE\fs-uae.exe",
-              "C:\Program Files (x86)\FS-UAE\fs-uae.exe"
+              "C:\Program Files (x86)\FS-UAE\fs-uae.exe",
+              "C:\tools\fs-uae.exe",
+              "C:\tools\FS-UAE\fs-uae.exe"
             )
             $fsUae = $candidatePaths | Where-Object { Test-Path $_ } | Select-Object -First 1
           }
+          if (-not $fsUae -and (Test-Path "C:\tools")) {
+            $fsUae = Get-ChildItem "C:\tools" -Recurse -Filter "fs-uae.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          }
+          if (-not $fsUae -and (Test-Path "C:\ProgramData\chocolatey\lib\fs-uae")) {
+            $fsUae = Get-ChildItem "C:\ProgramData\chocolatey\lib\fs-uae" -Recurse -Filter "fs-uae.exe" -ErrorAction SilentlyContinue | Select-Object -First 1
+          }
           if ($fsUae) {
-            $fsUaePath = if ($fsUae.Source) { $fsUae.Source } else { [string]$fsUae }
+            $fsUaePath = if ($fsUae.Source) { $fsUae.Source } elseif ($fsUae.FullName) { $fsUae.FullName } else { [string]$fsUae }
+            Write-Host "Bundling FS-UAE from $fsUaePath"
             .\scripts\package_windows_installer.ps1 -Version $version -FsUaeBundleBin $fsUaePath
           } else {
-            .\scripts\package_windows_installer.ps1 -Version $version
+            throw "FS-UAE was installed but fs-uae.exe was not found. Refusing to build a Windows package without bundled FS-UAE."
           }
       - uses: actions/upload-artifact@v4
         with:
@@ -114,7 +123,7 @@ jobs:
         shell: bash
         run: |
           version="${{ github.event.inputs.version }}"
-          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.6}"; fi
+          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.6.1}"; fi
           fs_uae=""
           for candidate in \
             "/Applications/FS-UAE.app/Contents/MacOS/fs-uae" \
@@ -157,7 +166,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           version="${{ github.event.inputs.version }}"
-          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.6}"; fi
+          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.6.1}"; fi
           if gh release view "$version" >/dev/null 2>&1; then
             gh release upload "$version" release-assets/* --clobber
           else

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${VERSION:-v0.5}"
+VERSION="${VERSION:-v0.6.1}"
 PKG="Enemy-Tempest-Reborn-${VERSION}-linux-x64"
 OUT_DIR="${OUT_DIR:-${ROOT}/dist}"
 STAGE="${OUT_DIR}/${PKG}"
@@ -12,11 +12,7 @@ FS_UAE_BUNDLE_BIN="${FS_UAE_BUNDLE_BIN:-}"
 
 mkdir -p "$OUT_DIR"
 rm -rf "$STAGE" "$ARCHIVE" "$SUM"
-mkdir -p \
-  "$STAGE/output/logs" \
-  "$STAGE/output/screenshots" \
-  "$STAGE/output/states" \
-  "$STAGE/work/launcher-runtime"
+mkdir -p "$STAGE"
 
 (
   cd "$ROOT/launcher"
@@ -27,11 +23,10 @@ rsync -a "$ROOT/launcher/build/linux/x64/release/bundle/" "$STAGE/launcher/"
 rsync -a "$ROOT/configs" "$STAGE/"
 rsync -a "$ROOT/assets" "$STAGE/"
 rsync -a "$ROOT/roms" "$STAGE/"
+mkdir -p "$STAGE/work/kickstart-deps"
 rsync -a "$ROOT/work/kickstart-deps/patches" "$STAGE/work/kickstart-deps/"
-rsync -a "$ROOT/scripts" "$STAGE/"
 rsync -a "$ROOT/docs" "$STAGE/"
-rsync -a "$ROOT/evidence" "$STAGE/"
-cp "$ROOT/README.md" "$ROOT/README_DE.md" "$ROOT/LICENSES.md" "$ROOT/CHECKSUMS.sha256" "$STAGE/"
+cp "$ROOT/README.md" "$ROOT/README_DE.md" "$ROOT/LICENSES.md" "$STAGE/"
 
 if [ -n "$FS_UAE_BUNDLE_BIN" ]; then
   if [ ! -x "$FS_UAE_BUNDLE_BIN" ]; then
@@ -63,7 +58,6 @@ cat >"$STAGE/run-linux.sh" <<'EOF'
 set -euo pipefail
 DIR="$(cd "$(dirname "$0")" && pwd)"
 cd "$DIR"
-mkdir -p output/logs output/screenshots output/states work/launcher-runtime
 exec "$DIR/launcher/launcher"
 EOF
 chmod +x "$STAGE/run-linux.sh"
@@ -75,7 +69,7 @@ Start:
   ./run-linux.sh
 
 If bin/fs-uae/fs-uae is present, the launcher uses that bundled emulator.
-Otherwise fs-uae must be installed and available in PATH.
+Runtime files are written to the user's application data directory.
 EOF
 
 tar -C "$OUT_DIR" -czf "$ARCHIVE" "$PKG"

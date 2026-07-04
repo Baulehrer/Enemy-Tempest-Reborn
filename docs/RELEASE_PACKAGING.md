@@ -2,19 +2,20 @@
 
 This project can produce portable release bundles for Linux, Windows, and
 macOS. The bundles contain the Flutter launcher, Enemy ADFs, AROS ROMs,
-FS-UAE profiles, documentation, and runtime folders.
+FS-UAE profiles and documentation. Runtime files are written to the user's app
+data directory, not into the installed package.
 
 ## Local Linux build
 
 ```bash
-VERSION=v0.6 ./scripts/package_linux_x64.sh
+VERSION=v0.6.1 ./scripts/package_linux_x64.sh
 ```
 
 If `FS_UAE_BUNDLE_BIN` points to an executable FS-UAE binary, the package
 includes it as `bin/fs-uae/fs-uae`.
 
 ```bash
-VERSION=v0.6 \
+VERSION=v0.6.1 \
 FS_UAE_BUNDLE_BIN="$(command -v fs-uae)" \
 ./scripts/package_linux_x64.sh
 ```
@@ -27,7 +28,7 @@ Output:
 To also create a Linux AppImage, install `appimagetool` and run:
 
 ```bash
-VERSION=v0.6 \
+VERSION=v0.6.1 \
 FS_UAE_BUNDLE_BIN="$(command -v fs-uae)" \
 APPIMAGETOOL=appimagetool \
 ./scripts/package_linux_appimage.sh
@@ -43,7 +44,7 @@ Additional output:
 Windows packages must be built on Windows:
 
 ```powershell
-.\scripts\package_windows_x64.ps1 -Version v0.6
+.\scripts\package_windows_x64.ps1 -Version v0.6.1
 ```
 
 If an FS-UAE binary is supplied, it is copied to
@@ -51,7 +52,7 @@ If an FS-UAE binary is supplied, it is copied to
 
 ```powershell
 .\scripts\package_windows_x64.ps1 `
-  -Version v0.6 `
+  -Version v0.6.1 `
   -FsUaeBundleBin "C:\Program Files\FS-UAE\fs-uae.exe"
 ```
 
@@ -64,7 +65,7 @@ To create the Inno Setup installer as well, install Inno Setup 6 and run:
 
 ```powershell
 .\scripts\package_windows_installer.ps1 `
-  -Version v0.6 `
+  -Version v0.6.1 `
   -FsUaeBundleBin "C:\Program Files\FS-UAE\fs-uae.exe"
 ```
 
@@ -78,7 +79,7 @@ Additional output:
 macOS packages must be built on macOS:
 
 ```bash
-VERSION=v0.6 ./scripts/package_macos_universal.sh
+VERSION=v0.6.1 ./scripts/package_macos_universal.sh
 ```
 
 If `FS_UAE_BUNDLE_BIN` points to an executable FS-UAE binary, the package
@@ -97,8 +98,9 @@ runs for version tags matching `v*`. Linux produces both `.tar.gz` and
 `.AppImage`; Windows produces both `.zip` and Inno Setup `.exe` installer.
 
 The workflow attempts to install or locate FS-UAE on each runner. If FS-UAE is
-found, it is bundled. If not, the package still builds, but the user must have
-`fs-uae`/`fs-uae.exe` installed in `PATH`.
+found, it is bundled. Windows release builds fail deliberately if `fs-uae.exe`
+cannot be bundled, because the Windows installer is expected to work without a
+separate emulator install.
 
 ## Current limitation
 

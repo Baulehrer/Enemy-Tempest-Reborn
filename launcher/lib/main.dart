@@ -84,7 +84,7 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.6';
+  static const appVersion = '0.6.1';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
   static const launchSplashAsset = 'assets/images/launch-splash-boxart.jpeg';
   static const graphicsPresets = [
@@ -408,15 +408,49 @@ class _LauncherScreenState extends State<LauncherScreen> {
     return File(Platform.resolvedExecutable).parent.parent.parent.parent;
   }
 
-  File _settingsFile(Directory root) {
+  Directory _userDataRoot() {
+    final env = Platform.environment;
+    if (Platform.isWindows) {
+      final appData = env['APPDATA'];
+      if (appData != null && appData.isNotEmpty) {
+        return Directory(
+          '$appData${Platform.pathSeparator}Enemy Tempest Reborn',
+        );
+      }
+    } else if (Platform.isMacOS) {
+      final home = env['HOME'];
+      if (home != null && home.isNotEmpty) {
+        return Directory(
+          '$home${Platform.pathSeparator}Library${Platform.pathSeparator}Application Support${Platform.pathSeparator}Enemy Tempest Reborn',
+        );
+      }
+    } else {
+      final xdgDataHome = env['XDG_DATA_HOME'];
+      if (xdgDataHome != null && xdgDataHome.isNotEmpty) {
+        return Directory(
+          '$xdgDataHome${Platform.pathSeparator}enemy-tempest-reborn',
+        );
+      }
+      final home = env['HOME'];
+      if (home != null && home.isNotEmpty) {
+        return Directory(
+          '$home${Platform.pathSeparator}.local${Platform.pathSeparator}share${Platform.pathSeparator}enemy-tempest-reborn',
+        );
+      }
+    }
+    return Directory(
+      '${Directory.systemTemp.path}${Platform.pathSeparator}enemy-tempest-reborn',
+    );
+  }
+
+  File _settingsFile() {
     return File(
-      '${root.path}${Platform.pathSeparator}work${Platform.pathSeparator}launcher-runtime${Platform.pathSeparator}settings.json',
+      '${_userDataRoot().path}${Platform.pathSeparator}settings.json',
     );
   }
 
   Future<void> _loadSettings() async {
-    final root = _projectRoot();
-    final file = _settingsFile(root);
+    final file = _settingsFile();
     if (!file.existsSync()) {
       return;
     }
@@ -449,8 +483,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
   }
 
   Future<void> _saveSettings() async {
-    final root = _projectRoot();
-    final file = _settingsFile(root);
+    final file = _settingsFile();
     await file.parent.create(recursive: true);
     const encoder = JsonEncoder.withIndent('  ');
     await file.writeAsString(
@@ -534,8 +567,9 @@ class _LauncherScreenState extends State<LauncherScreen> {
     File baseConfig,
     LauncherTarget selected,
   ) async {
+    final userDataRoot = _userDataRoot();
     final runtimeDir = Directory(
-      '${root.path}${Platform.pathSeparator}work${Platform.pathSeparator}launcher-runtime',
+      '${userDataRoot.path}${Platform.pathSeparator}work${Platform.pathSeparator}launcher-runtime',
     );
     await runtimeDir.create(recursive: true);
 
@@ -546,13 +580,13 @@ class _LauncherScreenState extends State<LauncherScreen> {
       '${runtimeDir.path}${Platform.pathSeparator}tempestreborn_runtime_$targetId.fs-uae',
     );
     final logDir = Directory(
-      '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}logs',
+      '${userDataRoot.path}${Platform.pathSeparator}output${Platform.pathSeparator}logs',
     );
     final screenshotDir = Directory(
-      '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}screenshots',
+      '${userDataRoot.path}${Platform.pathSeparator}output${Platform.pathSeparator}screenshots',
     );
     final stateDir = Directory(
-      '${root.path}${Platform.pathSeparator}output${Platform.pathSeparator}states',
+      '${userDataRoot.path}${Platform.pathSeparator}output${Platform.pathSeparator}states',
     );
     await logDir.create(recursive: true);
     await screenshotDir.create(recursive: true);

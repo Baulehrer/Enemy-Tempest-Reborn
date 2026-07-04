@@ -1,7 +1,0 @@
-run_id=20260703T085830+0200
-started_at=2026-07-03T08:58:30+02:00
-base_config=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/release/Enemy-Tempest-Reborn/configs/fs-uae/tempestreborn_intro_de_a1200.fs-uae
-capture_at=70
-run_seconds=76
-window=960x720
-variants=sharp smooth scanlines crt-effect hq2x scale2x xbrz4x scalefx

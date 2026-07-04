@@ -1,8 +1,0 @@
-crt-shader   timeout_terminated
-crt-hyllian  timeout_terminated
-crt-lottes   timeout_terminated
-scale4xhq    timeout_terminated
-xbrz6x       timeout_terminated
-super-xbr-3p timeout_terminated
-scanline-3x  timeout_terminated
-sharp-bilinear timeout_terminated

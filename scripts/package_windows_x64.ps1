@@ -1,5 +1,5 @@
 param(
-  [string]$Version = $(if ($env:VERSION) { $env:VERSION } else { "v0.5" }),
+  [string]$Version = $(if ($env:VERSION) { $env:VERSION } else { "v0.6.1" }),
   [string]$OutDir = $(if ($env:OUT_DIR) { $env:OUT_DIR } else { "" }),
   [string]$FsUaeBundleBin = $(if ($env:FS_UAE_BUNDLE_BIN) { $env:FS_UAE_BUNDLE_BIN } else { "" })
 )
@@ -18,11 +18,7 @@ $Sum = "$Archive.sha256"
 
 New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $Stage, $Archive, $Sum
-New-Item -ItemType Directory -Force -Path `
-  (Join-Path $Stage "output/logs"), `
-  (Join-Path $Stage "output/screenshots"), `
-  (Join-Path $Stage "output/states"), `
-  (Join-Path $Stage "work/launcher-runtime") | Out-Null
+New-Item -ItemType Directory -Force -Path $Stage | Out-Null
 
 Push-Location (Join-Path $Root "launcher")
 flutter build windows --release
@@ -30,7 +26,7 @@ Pop-Location
 
 Copy-Item -Recurse -Force (Join-Path $Root "launcher/build/windows/x64/runner/Release") (Join-Path $Stage "launcher")
 
-foreach ($DirName in @("configs", "assets", "roms", "scripts", "docs", "evidence")) {
+foreach ($DirName in @("configs", "assets", "roms", "docs")) {
   $Source = Join-Path $Root $DirName
   if (Test-Path $Source) {
     Copy-Item -Recurse -Force $Source (Join-Path $Stage $DirName)
@@ -43,7 +39,7 @@ if (Test-Path $PatchSource) {
   Copy-Item -Recurse -Force $PatchSource (Join-Path $Stage "work/kickstart-deps/patches")
 }
 
-foreach ($FileName in @("README.md", "README_DE.md", "LICENSES.md", "CHECKSUMS.sha256")) {
+foreach ($FileName in @("README.md", "README_DE.md", "LICENSES.md")) {
   Copy-Item -Force (Join-Path $Root $FileName) (Join-Path $Stage $FileName)
 }
 
@@ -69,10 +65,6 @@ if (-not [string]::IsNullOrWhiteSpace($FsUaeBundleBin)) {
 @echo off
 setlocal
 cd /d "%~dp0"
-if not exist output\logs mkdir output\logs
-if not exist output\screenshots mkdir output\screenshots
-if not exist output\states mkdir output\states
-if not exist work\launcher-runtime mkdir work\launcher-runtime
 start "" "%~dp0launcher\launcher.exe"
 "@ | Set-Content -Encoding ASCII (Join-Path $Stage "run-windows.bat")
 
@@ -83,7 +75,7 @@ Start:
   run-windows.bat
 
 If bin\fs-uae\fs-uae.exe is present, the launcher uses that bundled emulator.
-Otherwise fs-uae.exe must be installed and available in PATH.
+Runtime files are written to the user's application data directory.
 "@ | Set-Content -Encoding ASCII (Join-Path $Stage "PACKAGE_README.txt")
 
 Compress-Archive -Path (Join-Path $Stage "*") -DestinationPath $Archive -Force

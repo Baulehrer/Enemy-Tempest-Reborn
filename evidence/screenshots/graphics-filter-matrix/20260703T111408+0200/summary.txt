@@ -1,5 +1,0 @@
-sharp        timeout_terminated
-crt-shader   timeout_terminated
-crt-hyllian  timeout_terminated
-crt-lottes   timeout_terminated
-scanline-3x  timeout_terminated

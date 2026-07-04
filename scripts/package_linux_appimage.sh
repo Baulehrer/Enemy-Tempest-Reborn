@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${VERSION:-v0.5}"
+VERSION="${VERSION:-v0.6.1}"
 OUT_DIR="${OUT_DIR:-${ROOT}/dist}"
 APPIMAGETOOL="${APPIMAGETOOL:-appimagetool}"
 
