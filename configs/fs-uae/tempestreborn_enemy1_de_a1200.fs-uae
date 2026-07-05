@@ -4,7 +4,7 @@ amiga_model = A1200
 kickstart_file = roms/aros/aros-rom.bin
 kickstart_ext_file = roms/aros/aros-ext.bin
 
-floppy_drive_0 = work/kickstart-deps/patches/level-unlock/ENEMY1_V2_DE_A.game-nointro.level-unlock.adf
+floppy_drive_0 = work/kickstart-deps/patches/cli-splash/ENEMY1_V2_DE_A.game-nointro.level-unlock.cli-splash.adf
 floppy_drive_1 = assets/adf/ENEMY1_V2_DE_B.adf
 
 chip_memory = 2048

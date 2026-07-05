@@ -1,0 +1,35 @@
+patch=cli-splash-startup
+name=intro_en
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/release/Enemy-Tempest-Reborn/work/kickstart-deps/patches/enemy1-boot-split/ENEMY1_V2_EN_A.intro-only.adf
+source_sha256=09f276caba0a5c7491cf3bee2c857467f2d2481085790dcf50a334dd606b2206
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/release/Enemy-Tempest-Reborn/work/kickstart-deps/patches/cli-splash/ENEMY1_V2_EN_A.intro-only.cli-splash.adf
+patched_sha256=acdb9a78be94aac126bc402ddba238890479e2e1cf583d046f079b6d97b05fcc
+startup_sequence:
+Echo "*E[0m*E[32m*E[41m"
+Echo "*E[0;0H*E[J"
+Echo ""
+Echo "   ################################################################"
+Echo "   ##                                                            ##"
+Echo "   ##         ######  ##   ##  ######  ##   ##  ##   ##          ##"
+Echo "   ##         ##      ###  ##  ##      ### ###   ## ##           ##"
+Echo "   ##         #####   #### ##  #####   #######    ###            ##"
+Echo "   ##         ##      ## ####  ##      ## # ##     ##            ##"
+Echo "   ##         ######  ##   ##  ######  ##   ##     ##            ##"
+Echo "   ##                                                            ##"
+Echo "   ##        E N E M Y   -   T E M P E S T   R E B O R N         ##"
+Echo "   ##                                                            ##"
+Echo "   ################################################################"
+Echo "   ##                                                            ##"
+Echo "   ##         A N A C H R O N I A   x   A R O S   U A E          ##"
+Echo "   ##                                                            ##"
+Echo "   ################################################################"
+Echo ""
+Echo "        PROJECT  : Stephan Kaufmann"
+Echo "        ORIGINAL : Andre Wuethrich / Anachronia"
+Echo "        SYSTEM   : AROS Kickstart + FS-UAE"
+Echo ""
+Echo "        Loading Enemy..."
+Echo ""
+Echo "*E[0m"
+ENEMY_A:enif/enintro
+endcli

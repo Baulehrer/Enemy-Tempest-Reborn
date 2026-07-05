@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'dart:ui';
+import 'dart:ui' show Size;
 
 import 'package:enemy_tempest_reborn_launcher/main.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter/widgets.dart' show Image;
 
 void main() {
   setUp(() {
@@ -40,6 +41,7 @@ void main() {
 
     expect(find.text('INFO'), findsOneWidget);
     expect(find.text('Enemy: Tempest Reborn'), findsOneWidget);
-    expect(find.text('0.6.1'), findsOneWidget);
+    expect(find.text('0.7'), findsOneWidget);
+    expect(find.byType(Image), findsAtLeastNWidgets(1));
   });
 }

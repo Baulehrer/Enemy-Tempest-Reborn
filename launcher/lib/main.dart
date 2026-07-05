@@ -84,7 +84,7 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.6.1';
+  static const appVersion = '0.7';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
   static const launchSplashAsset = 'assets/images/launch-splash-boxart.jpeg';
   static const graphicsPresets = [
@@ -1176,6 +1176,15 @@ class _AboutDialog extends StatelessWidget {
           children: [
             _AboutLine(label: 'Project', value: 'Enemy: Tempest Reborn'),
             _AboutLine(label: 'Version', value: version),
+            const SizedBox(height: 12),
+            ClipRect(
+              child: Image.asset(
+                _LauncherScreenState.launchSplashAsset,
+                height: 180,
+                fit: BoxFit.cover,
+                alignment: Alignment.center,
+              ),
+            ),
             const SizedBox(height: 14),
             _AboutSection(title: featureTitle, lines: featureLines),
             const SizedBox(height: 14),
@@ -1592,6 +1601,11 @@ class _ActionBox extends StatelessWidget {
         : selected.mode == 'external'
         ? (english ? 'OPEN CARTOGRAPHER' : 'CARTOGRAPHER OEFFNEN')
         : (english ? 'START GAME' : 'SPIEL STARTEN');
+    final shownStatus = selected.mode == 'intro' && !busy
+        ? (english
+              ? 'Ready - some parts missing.'
+              : 'Bereit - einige Teile fehlen.')
+        : status;
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -1611,7 +1625,7 @@ class _ActionBox extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            status,
+            shownStatus,
             style: const TextStyle(color: SiteColors.text, fontSize: 16),
           ),
           const SizedBox(height: 14),

@@ -1,0 +1,35 @@
+patch=cli-splash-startup
+name=enemy1_de
+source_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/release/Enemy-Tempest-Reborn/work/kickstart-deps/patches/level-unlock/ENEMY1_V2_DE_A.game-nointro.level-unlock.adf
+source_sha256=00bd8ef151247db37ff7316ff465c3626673bbeacee25827d3aaadbce9388760
+patched_adf=/home/kaufmann/Stephans Projekte/Skripte/Enemy Port (UAE)/release/Enemy-Tempest-Reborn/work/kickstart-deps/patches/cli-splash/ENEMY1_V2_DE_A.game-nointro.level-unlock.cli-splash.adf
+patched_sha256=86be6b6ee204efc54109317ebc238aa4cb79a60edff8e0ed1e78f19b05501ae4
+startup_sequence:
+Echo "*E[0m*E[32m*E[41m"
+Echo "*E[0;0H*E[J"
+Echo ""
+Echo "   ################################################################"
+Echo "   ##                                                            ##"
+Echo "   ##         ######  ##   ##  ######  ##   ##  ##   ##          ##"
+Echo "   ##         ##      ###  ##  ##      ### ###   ## ##           ##"
+Echo "   ##         #####   #### ##  #####   #######    ###            ##"
+Echo "   ##         ##      ## ####  ##      ## # ##     ##            ##"
+Echo "   ##         ######  ##   ##  ######  ##   ##     ##            ##"
+Echo "   ##                                                            ##"
+Echo "   ##        E N E M Y   -   T E M P E S T   R E B O R N         ##"
+Echo "   ##                                                            ##"
+Echo "   ################################################################"
+Echo "   ##                                                            ##"
+Echo "   ##         A N A C H R O N I A   x   A R O S   U A E          ##"
+Echo "   ##                                                            ##"
+Echo "   ################################################################"
+Echo ""
+Echo "        PROJECT  : Stephan Kaufmann"
+Echo "        ORIGINAL : Andre Wuethrich / Anachronia"
+Echo "        SYSTEM   : AROS Kickstart + FS-UAE"
+Echo ""
+Echo "        Loading Enemy..."
+Echo ""
+Echo "*E[0m"
+ENEMY_A:c/closewb
+ENEMY_A:ef/enemy >nil:
