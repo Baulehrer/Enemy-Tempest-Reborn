@@ -41,7 +41,7 @@ void main() {
 
     expect(find.text('INFO'), findsOneWidget);
     expect(find.text('Enemy: Tempest Reborn'), findsOneWidget);
-    expect(find.text('0.7'), findsOneWidget);
+    expect(find.text('0.7.1'), findsOneWidget);
     expect(find.byType(Image), findsAtLeastNWidgets(1));
   });
 }

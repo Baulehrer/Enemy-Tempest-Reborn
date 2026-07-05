@@ -84,7 +84,7 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.7';
+  static const appVersion = '0.7.1';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
   static const launchSplashAsset = 'assets/images/launch-splash-boxart.jpeg';
   static const graphicsPresets = [

@@ -1,5 +1,5 @@
 param(
-  [string]$Version = $(if ($env:VERSION) { $env:VERSION } else { "v0.7" }),
+  [string]$Version = $(if ($env:VERSION) { $env:VERSION } else { "v0.7.1" }),
   [string]$OutDir = $(if ($env:OUT_DIR) { $env:OUT_DIR } else { "" }),
   [string]$FsUaeBundleBin = $(if ($env:FS_UAE_BUNDLE_BIN) { $env:FS_UAE_BUNDLE_BIN } else { "" })
 )

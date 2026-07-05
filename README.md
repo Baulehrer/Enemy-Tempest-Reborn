@@ -1,6 +1,6 @@
 # Enemy: Tempest Reborn
 
-Version 0.7
+Version 0.7.1
 
 Enemy: Tempest Reborn is a simple launcher package for playing Enemy 1 and
 Enemy 2 through FS-UAE. The goal is to make the games easy to start, with a
