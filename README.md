@@ -25,7 +25,8 @@ clean menu, prepared settings, and a few graphics presets.
   - Enhanced Plus
 - Keyboard, joystick, and gamepad profiles
 - Level selection prepared for normal play
-- Short launch splash while the Amiga system starts
+- Short host launch splash while FS-UAE starts
+- Clean Amiga-side CLI splash instead of raw AROS boot text
 - Windows installer
 - Linux AppImage
 - Portable Linux, Windows, and macOS packages
@@ -50,6 +51,12 @@ Keyboard, joystick, and gamepad can be selected in the menu. The keyboard setup
 supports cursor keys and WASD for movement. Gamepad and joystick are intended
 for a more original Amiga-like feel.
 
+## Known Notes
+
+The Enemy 1 intro runs under AROS, but a few intro scenes are currently missing.
+The games themselves are packaged around the tested AROS/FS-UAE profiles and
+prepared ADF patches.
+
 ## Release Pipeline
 
 The project uses GitHub Actions to build release packages. A release tag starts
@@ -61,6 +68,8 @@ them to the GitHub release.
 
 Thanks to the AROS project for the free Amiga-compatible system work that makes
 this package possible.
+
+Thanks to FS-UAE for the emulator base used by the release packages.
 
 Special thanks to André Wüthrich <anachronia@gmail.com> for Enemy and
 Anachronia.

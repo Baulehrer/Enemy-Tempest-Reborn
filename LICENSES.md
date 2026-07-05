@@ -20,6 +20,10 @@ Included files:
 Prepared patched ADFs are included under `work/kickstart-deps/patches/` and
 are used by the launcher profiles.
 
+The current launcher profiles use the `cli-splash` ADF variants. These are
+rebuilt from the prepared patched ADFs by `scripts/build_cli_splash_adfs.py`.
+They add only a clean AmigaDOS startup message and do not modify AROS.
+
 ## AROS ROMs
 
 The AROS ROM binaries included here are the AROS ROMs used for testing. AROS is
@@ -34,12 +38,39 @@ built on 2026-06-21.
 
 No Commodore Kickstart ROMs are included.
 
+Included AROS ROM files:
+
+- `roms/aros/aros-rom.bin`
+- `roms/aros/aros-ext.bin`
+- `roms/aros/aros-rom.20250816.bin`
+
 ## FS-UAE
 
 Release packages are built to include FS-UAE when the platform build runner can
 install or locate it. FS-UAE is GPL-2.0-only in the tested package metadata.
 Packages that bundle FS-UAE include the bundled emulator files under
 `bin/fs-uae/`.
+
+## Shader Presets
+
+The package includes FS-UAE shader preset files under
+`configs/fs-uae-data/Shaders/`.
+
+- `super-xbr-3p.shader` contains upstream copyright and permission notices from
+  Hyllian directly in the file. Keep those notices with the shader.
+- `hq2x-hard-light-bloom.shader` is a local combined FS-UAE shader preset used
+  by the Enhanced Plus profile. No separate upstream notice header is present in
+  the file; keep this provenance note with redistributed packages.
+
+The built-in FS-UAE shader names referenced by the launcher, such as
+`crt-hyllian`, `crt-lottes`, `scalefx`, and `scale4xhq`, are FS-UAE runtime
+shader choices rather than files authored by this launcher.
+
+## Launcher Assets
+
+Launcher artwork under `launcher/assets/images/` is used for the menu, launch
+splash, and About dialog. The Enemy/Anachronia artwork is included for this
+package with the same project permission context as the Enemy ADFs above.
 
 ## Repository Scripts and Documentation
 

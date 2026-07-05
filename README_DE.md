@@ -1,6 +1,6 @@
 # Enemy: Tempest Reborn
 
-Version 0.6.1
+Version 0.7
 
 Enemy: Tempest Reborn ist ein einfaches Launcher-Paket, um Enemy 1 und Enemy 2
 ueber FS-UAE zu spielen. Ziel ist ein unkomplizierter Start mit klarem Menue,
@@ -25,7 +25,8 @@ vorbereiteten Einstellungen und einigen Grafik-Presets.
   - Enhanced Plus
 - Tastatur-, Joystick- und Gamepad-Profile
 - Levelauswahl fuer normales Spielen vorbereitet
-- Kurzer Start-Splash, waehrend das Amiga-System startet
+- Kurzer Host-Start-Splash, waehrend FS-UAE startet
+- Sauberer Amiga-CLI-Splash statt rohem AROS-Boottext
 - Windows-Installer
 - Linux-AppImage
 - Portable Pakete fuer Linux, Windows und macOS
@@ -51,6 +52,12 @@ Tastatur, Joystick und Gamepad koennen im Menue ausgewaehlt werden. Die
 Tastatur nutzt Cursor-Tasten und WASD fuer Bewegung. Gamepad und Joystick sind
 naeher am klassischen Amiga-Spielgefuehl.
 
+## Bekannte Hinweise
+
+Das Enemy-1-Intro laeuft unter AROS, aber einige Intro-Szenen fehlen aktuell.
+Die Spiele selbst sind um die getesteten AROS-/FS-UAE-Profile und vorbereiteten
+ADF-Patches herum paketiert.
+
 ## Release-Pipeline
 
 Das Projekt nutzt GitHub Actions fuer die Release-Pakete. Ein Release-Tag
@@ -62,6 +69,8 @@ in das GitHub-Release hoch.
 
 Danke an das AROS-Projekt fuer die freie Amiga-kompatible Systemarbeit, die
 dieses Paket moeglich macht.
+
+Danke an FS-UAE fuer die Emulator-Basis der Release-Pakete.
 
 Besonderer Dank an André Wüthrich <anachronia@gmail.com> fuer Enemy und
 Anachronia.

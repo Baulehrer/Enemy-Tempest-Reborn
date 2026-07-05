@@ -1,17 +1,14 @@
-# launcher
+# Enemy: Tempest Reborn Launcher
 
-A new Flutter project.
+Flutter launcher for the Enemy: Tempest Reborn FS-UAE package.
 
-## Getting Started
+The launcher selects Enemy 1, Enemy 2, or the separate Enemy 1 intro, writes a
+runtime FS-UAE config, and starts the packaged emulator profile. User-facing
+documentation lives in the repository root `README.md` and `README_DE.md`.
 
-This project is a starting point for a Flutter application.
+Useful local checks:
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```sh
+flutter analyze
+flutter test
+```

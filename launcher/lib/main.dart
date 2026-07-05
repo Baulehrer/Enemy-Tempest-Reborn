@@ -1152,10 +1152,10 @@ class _AboutDialog extends StatelessWidget {
             'Fullscreen-orientierte FS-UAE-Runtime-Profile',
             'Launcher-Pruefung fuer Emulator, ROMs und Diskettenimages',
           ];
-    final futureTitle = english ? 'Next' : 'Naechster Schritt';
-    final futureText = english
-        ? 'FS-UAE is currently expected in PATH. A bundled, project-patched FS-UAE build is planned for the next package line.'
-        : 'FS-UAE wird aktuell im PATH erwartet. Ein mitgelieferter, projektspezifisch gepatchter FS-UAE-Build ist fuer die naechste Paketlinie geplant.';
+    final notesTitle = english ? 'Notes' : 'Hinweise';
+    final notesText = english
+        ? 'The release packages include prepared AROS/FS-UAE profiles. The Enemy 1 intro works, but some intro scenes are currently missing under AROS.'
+        : 'Die Release-Pakete enthalten vorbereitete AROS-/FS-UAE-Profile. Das Enemy-1-Intro laeuft, aber einige Intro-Szenen fehlen aktuell unter AROS.';
 
     return AlertDialog(
       backgroundColor: const Color(0xff151923),
@@ -1189,7 +1189,7 @@ class _AboutDialog extends StatelessWidget {
             _AboutSection(title: featureTitle, lines: featureLines),
             const SizedBox(height: 14),
             Text(
-              futureTitle.toUpperCase(),
+              notesTitle.toUpperCase(),
               style: const TextStyle(
                 color: SiteColors.white,
                 fontWeight: FontWeight.w900,
@@ -1198,7 +1198,7 @@ class _AboutDialog extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              futureText,
+              notesText,
               style: const TextStyle(color: SiteColors.text, height: 1.35),
             ),
           ],
