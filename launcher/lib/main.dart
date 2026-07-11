@@ -3,12 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+part 'launcher_ui.dart';
+
 void main() {
   runApp(const TempestRebornLauncher());
 }
 
 class TempestRebornLauncher extends StatelessWidget {
-  const TempestRebornLauncher({super.key});
+  const TempestRebornLauncher({super.key, this.userDataPath});
+
+  final String? userDataPath;
 
   @override
   Widget build(BuildContext context) {
@@ -18,15 +22,17 @@ class TempestRebornLauncher extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.dark,
         fontFamily: 'Open Sans',
-        scaffoldBackgroundColor: const Color(0xff172856),
+        scaffoldBackgroundColor: SiteColors.voidBlack,
         colorScheme: const ColorScheme.dark(
-          primary: SiteColors.linkBlue,
+          primary: SiteColors.enemyRed,
           secondary: SiteColors.pink,
           surface: SiteColors.panel,
         ),
+        focusColor: SiteColors.signalYellow,
+        splashColor: SiteColors.pinkMuted,
         useMaterial3: true,
       ),
-      home: const LauncherScreen(),
+      home: LauncherScreen(userDataPath: userDataPath),
     );
   }
 }
@@ -38,16 +44,54 @@ enum LanguageChoice { de, en }
 class SiteColors {
   const SiteColors._();
 
-  static const blueText = Color(0xff8e91ff);
-  static const linkBlue = Color(0xff8888ee);
-  static const pink = Color(0xffd4aace);
-  static const panel = Color(0xff111326);
-  static const panelDark = Color(0xff050509);
-  static const bodyBlue = Color(0xff1d315f);
-  static const line = Color(0xff777dda);
-  static const text = Color(0xffaeb0ff);
-  static const title = Color(0xff050509);
-  static const white = Color(0xfff4f4f7);
+  static const voidBlack = Color(0xff05070d);
+  static const panel = Color(0xff101729);
+  static const panelRaised = Color(0xff172442);
+  static const panelDark = Color(0xff090d18);
+  static const bodyBlue = Color(0xff142753);
+  static const linkBlue = Color(0xff8b91f4);
+  static const blueText = Color(0xffa7abff);
+  static const pink = Color(0xffe1afd7);
+  static const pinkMuted = Color(0x33e1afd7);
+  static const enemyRed = Color(0xffcf2635);
+  static const enemyRedDark = Color(0xff701622);
+  static const signalYellow = Color(0xffffd34e);
+  static const readyGreen = Color(0xff6de18b);
+  static const line = Color(0xff626bb5);
+  static const lineSoft = Color(0xff35416b);
+  static const text = Color(0xffc5c9dc);
+  static const textMuted = Color(0xff8e96ad);
+  static const title = Color(0xfff4f2f7);
+  static const white = Color(0xfff7f5f8);
+}
+
+class AppText {
+  const AppText(this.english);
+
+  final bool english;
+
+  String get settings => english ? 'Settings' : 'Einstellungen';
+  String get levelMaps => english ? 'Level maps' : 'Levelkarten';
+  String get about => english ? 'About' : 'Info';
+  String get display => english ? 'Display' : 'Bildschirm';
+  String get aspect => english ? 'Image format' : 'Bildformat';
+  String get graphics => english ? 'Graphics' : 'Grafik';
+  String get controls => english ? 'Controls' : 'Steuerung';
+  String get fullscreen => english ? 'Fullscreen' : 'Vollbild';
+  String get window => english ? 'Window' : 'Fenster';
+  String get pixelPerfect => english ? 'Pixel perfect' : 'Pixelgenau';
+  String get stretch => english ? 'Wide' : 'Breit';
+  String get enhanced => english ? 'Enhanced' : 'Verbessert';
+  String get enhancedPlus => english ? 'Enhanced Plus' : 'Verbessert Plus';
+  String get keyboard => english ? 'Keyboard' : 'Tastatur';
+  String get ready => english ? 'Ready to play' : 'Bereit zum Spielen';
+  String get introNote => english
+      ? 'Some intro scenes are currently missing.'
+      : 'Einige Intro-Szenen fehlen derzeit.';
+  String get openMaps => english ? 'Open level maps' : 'Levelkarten öffnen';
+  String get startGame => english ? 'Start game' : 'Spiel starten';
+  String get playIntro => english ? 'Play intro' : 'Intro starten';
+  String get close => english ? 'Close' : 'Schließen';
 }
 
 class LauncherTarget {
@@ -77,14 +121,16 @@ class PreflightResult {
 }
 
 class LauncherScreen extends StatefulWidget {
-  const LauncherScreen({super.key});
+  const LauncherScreen({super.key, this.userDataPath});
+
+  final String? userDataPath;
 
   @override
   State<LauncherScreen> createState() => _LauncherScreenState();
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.7.1';
+  static const appVersion = '0.8';
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
   static const launchSplashAsset = 'assets/images/launch-splash-boxart.jpeg';
   static const graphicsPresets = [
@@ -409,6 +455,7 @@ class _LauncherScreenState extends State<LauncherScreen> {
   }
 
   Directory _userDataRoot() {
+    if (widget.userDataPath case final path?) return Directory(path);
     final env = Platform.environment;
     if (Platform.isWindows) {
       final appData = env['APPDATA'];
@@ -460,7 +507,10 @@ class _LauncherScreenState extends State<LauncherScreen> {
       if (data is! Map<String, dynamic>) return;
       if (!mounted) return;
       setState(() {
-        _target = _targetFromName(data['target']) ?? _target;
+        final savedTarget = _targetFromName(data['target']);
+        _target = savedTarget == TargetKind.cartographer
+            ? TargetKind.enemy1
+            : savedTarget ?? _target;
         _language = _languageFromName(data['language']) ?? _language;
         _display =
             _allowed(data['display'], const ['Fullscreen', 'Window']) ??
@@ -827,84 +877,34 @@ class _LauncherScreenState extends State<LauncherScreen> {
   @override
   Widget build(BuildContext context) {
     final selected = _selected;
-    return Scaffold(
-      body: Stack(
-        children: [
-          const Positioned.fill(child: _BlueBackground()),
-          Column(
-            children: [
-              _Header(
-                language: _language,
-                onLanguageChanged: _setLanguage,
-                onAbout: _showAbout,
-              ),
-              Expanded(
-                child: Center(
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(maxWidth: 1080),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final narrow = constraints.maxWidth < 820;
-                        final sidebar = _Sidebar(
-                          selected: _target,
-                          language: _language,
-                          onSelected: _select,
-                        );
-                        final content = _ContentPane(
-                          selected: selected,
-                          languageCode: _languageCode,
-                          english: _english,
-                          status: _statusText,
-                          busy: _busy,
-                          display: _display,
-                          aspect: _aspect,
-                          pixels: _pixels,
-                          control: _control,
-                          onDisplayChanged: _setDisplay,
-                          onAspectChanged: _setAspect,
-                          onPixelsChanged: _setPixels,
-                          onControlChanged: _setControl,
-                          onLaunch: _launchSelected,
-                        );
-
-                        return SingleChildScrollView(
-                          padding: const EdgeInsets.fromLTRB(24, 26, 24, 28),
-                          child: narrow
-                              ? Column(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.stretch,
-                                  children: [
-                                    sidebar,
-                                    const SizedBox(height: 24),
-                                    content,
-                                  ],
-                                )
-                              : Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(width: 270, child: sidebar),
-                                    const SizedBox(width: 38),
-                                    Expanded(child: content),
-                                  ],
-                                ),
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-          if (_showLaunchSplash)
-            const Positioned.fill(
-              child: _LaunchSplash(asset: launchSplashAsset),
-            ),
-        ],
-      ),
+    return LauncherView(
+      selectedKind: _target,
+      selected: selected,
+      language: _language,
+      status: _statusText,
+      busy: _busy,
+      display: _display,
+      aspect: _aspect,
+      pixels: _pixels,
+      control: _control,
+      showLaunchSplash: _showLaunchSplash,
+      launchSplashAsset: launchSplashAsset,
+      onTargetChanged: _select,
+      onLanguageChanged: _setLanguage,
+      onDisplayChanged: _setDisplay,
+      onAspectChanged: _setAspect,
+      onPixelsChanged: _setPixels,
+      onControlChanged: _setControl,
+      onLaunch: _launchSelected,
+      onMaps: _openCartographer,
+      onAbout: _showAbout,
     );
   }
 }
 
+// Legacy widgets are retained temporarily to keep this release change focused
+// on presentation without touching the proven runtime implementation.
+// ignore: unused_element
 class _LaunchSplash extends StatelessWidget {
   const _LaunchSplash({required this.asset});
 
@@ -1005,6 +1005,7 @@ class _LaunchSplash extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _Header extends StatelessWidget {
   const _Header({
     required this.language,
@@ -1135,91 +1136,169 @@ class _AboutDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final title = english ? 'About' : 'Info';
-    final featureTitle = english ? 'Included' : 'Enthalten';
-    final featureLines = english
-        ? const [
-            'Enemy 1 and Enemy 2 in German and English',
-            'separate Enemy 1 intro launcher',
-            'AROS ROM profile with prepared Enemy ADF patches',
-            'fullscreen-first FS-UAE runtime profiles',
-            'launcher preflight for emulator, ROMs and disk images',
-          ]
-        : const [
-            'Enemy 1 und Enemy 2 auf Deutsch und Englisch',
-            'separater Enemy-1-Intro-Start',
-            'AROS-ROM-Profil mit vorbereiteten Enemy-ADF-Patches',
-            'Fullscreen-orientierte FS-UAE-Runtime-Profile',
-            'Launcher-Pruefung fuer Emulator, ROMs und Diskettenimages',
-          ];
-    final notesTitle = english ? 'Notes' : 'Hinweise';
-    final notesText = english
-        ? 'The release packages include prepared AROS/FS-UAE profiles. The Enemy 1 intro works, but some intro scenes are currently missing under AROS.'
-        : 'Die Release-Pakete enthalten vorbereitete AROS-/FS-UAE-Profile. Das Enemy-1-Intro laeuft, aber einige Intro-Szenen fehlen aktuell unter AROS.';
-
-    return AlertDialog(
-      backgroundColor: const Color(0xff151923),
-      shape: const RoundedRectangleBorder(),
-      title: Text(
-        title.toUpperCase(),
-        style: const TextStyle(
-          color: SiteColors.blueText,
-          fontWeight: FontWeight.w900,
-          letterSpacing: 1.5,
-        ),
-      ),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(maxWidth: 560),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            _AboutLine(label: 'Project', value: 'Enemy: Tempest Reborn'),
-            _AboutLine(label: 'Version', value: version),
-            const SizedBox(height: 12),
-            ClipRect(
-              child: Image.asset(
-                _LauncherScreenState.launchSplashAsset,
-                height: 180,
-                fit: BoxFit.cover,
-                alignment: Alignment.center,
+    final thanks = english ? 'With thanks' : 'Mit Dank an';
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: const EdgeInsets.all(18),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 720, maxHeight: 820),
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color: SiteColors.panel,
+            border: Border.all(color: SiteColors.enemyRed, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0xaa000000),
+                blurRadius: 28,
+                offset: Offset(0, 14),
               ),
-            ),
-            const SizedBox(height: 14),
-            _AboutSection(title: featureTitle, lines: featureLines),
-            const SizedBox(height: 14),
-            Text(
-              notesTitle.toUpperCase(),
-              style: const TextStyle(
-                color: SiteColors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 12,
-              ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              notesText,
-              style: const TextStyle(color: SiteColors.text, height: 1.35),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        TextButton(
-          onPressed: onClose,
-          child: Text(
-            english ? 'CLOSE' : 'SCHLIESSEN',
-            style: const TextStyle(
-              color: SiteColors.pink,
-              fontWeight: FontWeight.w900,
+            ],
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  padding: const EdgeInsets.fromLTRB(20, 14, 10, 14),
+                  decoration: const BoxDecoration(
+                    color: SiteColors.panelDark,
+                    border: Border(
+                      bottom: BorderSide(color: SiteColors.lineSoft),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const Expanded(
+                        child: Text(
+                          'ENEMY: TEMPEST REBORN',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: SiteColors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.w900,
+                            letterSpacing: 1.6,
+                          ),
+                        ),
+                      ),
+                      Text(
+                        'V$version',
+                        style: const TextStyle(
+                          color: SiteColors.signalYellow,
+                          fontSize: 12,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: onClose,
+                        tooltip: english ? 'Close' : 'Schließen',
+                        icon: const Icon(Icons.close),
+                        color: SiteColors.text,
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size.square(44),
+                          shape: const RoundedRectangleBorder(),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  color: SiteColors.voidBlack,
+                  padding: const EdgeInsets.all(14),
+                  child: AspectRatio(
+                    aspectRatio: 1214 / 880,
+                    child: Image.asset(
+                      _LauncherScreenState.launchSplashAsset,
+                      fit: BoxFit.contain,
+                      alignment: Alignment.center,
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(22, 20, 22, 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(
+                        thanks.toUpperCase(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: SiteColors.pink,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.8,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      _AboutCredit(
+                        name: 'André Wüthrich',
+                        role: english
+                            ? 'Creator of Enemy & Anachronia'
+                            : 'Schöpfer von Enemy & Anachronia',
+                      ),
+                      const SizedBox(height: 10),
+                      _AboutCredit(
+                        name: 'Stephan Kaufmann',
+                        role: english
+                            ? 'Author of Enemy: Tempest Reborn'
+                            : 'Autor von Enemy: Tempest Reborn',
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
 
+class _AboutCredit extends StatelessWidget {
+  const _AboutCredit({required this.name, required this.role});
+
+  final String name;
+  final String role;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+      decoration: BoxDecoration(
+        color: SiteColors.panelDark,
+        border: Border.all(color: SiteColors.lineSoft),
+      ),
+      child: Column(
+        children: [
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: SiteColors.white,
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          const SizedBox(height: 3),
+          Text(
+            role,
+            textAlign: TextAlign.center,
+            style: const TextStyle(
+              color: SiteColors.textMuted,
+              fontSize: 12,
+              height: 1.3,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+// ignore: unused_element
 class _AboutLine extends StatelessWidget {
   const _AboutLine({required this.label, required this.value});
 
@@ -1256,6 +1335,7 @@ class _AboutLine extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _AboutSection extends StatelessWidget {
   const _AboutSection({required this.title, required this.lines});
 
@@ -1380,6 +1460,7 @@ class _FlagButton extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _Sidebar extends StatelessWidget {
   const _Sidebar({
     required this.selected,
@@ -1484,6 +1565,7 @@ class _SubNavButton extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _ContentPane extends StatelessWidget {
   const _ContentPane({
     required this.selected,
@@ -1864,6 +1946,7 @@ class _DoubleRule extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _BlueBackground extends StatelessWidget {
   const _BlueBackground();
 
