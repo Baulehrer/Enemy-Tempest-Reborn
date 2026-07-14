@@ -1,11 +1,20 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
+
+import 'app_version.dart';
 
 part 'launcher_ui.dart';
+part 'intro_video_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   runApp(const TempestRebornLauncher());
 }
 
@@ -86,8 +95,8 @@ class AppText {
   String get keyboard => english ? 'Keyboard' : 'Tastatur';
   String get ready => english ? 'Ready to play' : 'Bereit zum Spielen';
   String get introNote => english
-      ? 'Some intro scenes are currently missing.'
-      : 'Einige Intro-Szenen fehlen derzeit.';
+      ? 'Original Kickstart video capture.'
+      : 'Videoaufnahme unter Original-Kickstart.';
   String get openMaps => english ? 'Open level maps' : 'Levelkarten öffnen';
   String get startGame => english ? 'Start game' : 'Spiel starten';
   String get playIntro => english ? 'Play intro' : 'Intro starten';
@@ -130,7 +139,7 @@ class LauncherScreen extends StatefulWidget {
 }
 
 class _LauncherScreenState extends State<LauncherScreen> {
-  static const appVersion = '0.8';
+  static const settingsSchemaVersion = 1;
   static const cartographerUrl = 'https://auralis.ch/plu/enemy/cartographer/';
   static const launchSplashAsset = 'assets/images/launch-splash-boxart.jpeg';
   static const graphicsPresets = [
@@ -158,6 +167,8 @@ class _LauncherScreenState extends State<LauncherScreen> {
   bool _busy = false;
   bool _showLaunchSplash = false;
   int _launchSplashToken = 0;
+  Process? _activeProcess;
+  String? _lastRuntimeConfig;
 
   @override
   void initState() {
@@ -225,8 +236,14 @@ class _LauncherScreenState extends State<LauncherScreen> {
   String get _statusText => _status.isEmpty ? _readyText : _status;
 
   Future<void> _launchSelected() async {
+    if (_busy) return;
     if (_target == TargetKind.cartographer) {
       await _openCartographer();
+      return;
+    }
+
+    if (_target == TargetKind.intro) {
+      await _playIntroVideo();
       return;
     }
 
@@ -256,41 +273,75 @@ class _LauncherScreenState extends State<LauncherScreen> {
         baseConfig,
         selected,
       );
+      _lastRuntimeConfig = runtimeConfig.path;
       final process = await Process.start(
         fsUae,
         [runtimeConfig.path],
         workingDirectory: _fsUaeWorkingDirectory(root, fsUae),
-        mode: selected.mode == 'game'
-            ? ProcessStartMode.detached
-            : ProcessStartMode.normal,
+        mode: ProcessStartMode.normal,
       );
-      if (selected.mode != 'game') {
-        process.stdout.drain<void>();
-        process.stderr.drain<void>();
-      }
+      _activeProcess = process;
+      process.stdout.drain<void>();
+      process.stderr.drain<void>();
       _hideLaunchSplashLater(splashToken, _launchSplashDuration(selected));
-      if (selected.mode == 'intro') {
-        await process.exitCode;
-        if (mounted) {
-          setState(
-            () => _status = _english ? 'Intro closed.' : 'Intro beendet.',
-          );
-        }
-      } else if (mounted) {
+      if (mounted) {
         setState(
           () => _status = _english
-              ? 'FS-UAE started with runtime config.'
-              : 'FS-UAE mit Runtime-Config gestartet.',
+              ? 'FS-UAE is running (PID ${process.pid}).'
+              : 'FS-UAE läuft (PID ${process.pid}).',
         );
       }
+      final exitCode = await process.exitCode;
+      if (mounted) {
+        setState(() {
+          _activeProcess = null;
+          _status = exitCode == 0
+              ? (_english ? 'FS-UAE closed.' : 'FS-UAE beendet.')
+              : (_english
+                    ? 'FS-UAE exited with code $exitCode.'
+                    : 'FS-UAE wurde mit Code $exitCode beendet.');
+        });
+      }
     } on Object catch (error) {
-      setState(() {
-        _showLaunchSplash = false;
-        _launchSplashToken++;
-        _status = _english
-            ? 'Launch failed: $error'
-            : 'Start fehlgeschlagen: $error';
-      });
+      if (mounted) {
+        setState(() {
+          _showLaunchSplash = false;
+          _launchSplashToken++;
+          _status = _english
+              ? 'Launch failed: $error'
+              : 'Start fehlgeschlagen: $error';
+        });
+      }
+    } finally {
+      _activeProcess = null;
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
+  Future<void> _playIntroVideo() async {
+    setState(() {
+      _busy = true;
+      _status = _english ? 'Playing intro...' : 'Intro wird abgespielt...';
+    });
+
+    try {
+      await Navigator.of(context).push<void>(
+        MaterialPageRoute<void>(
+          builder: (context) => IntroVideoScreen(english: _english),
+          fullscreenDialog: true,
+        ),
+      );
+      if (mounted) {
+        setState(() => _status = _english ? 'Intro closed.' : 'Intro beendet.');
+      }
+    } on Object catch (error) {
+      if (mounted) {
+        setState(() {
+          _status = _english
+              ? 'Intro playback failed: $error'
+              : 'Intro-Wiedergabe fehlgeschlagen: $error';
+        });
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -505,6 +556,8 @@ class _LauncherScreenState extends State<LauncherScreen> {
     try {
       final data = jsonDecode(await file.readAsString());
       if (data is! Map<String, dynamic>) return;
+      final schema = data['schema_version'];
+      if (schema != null && schema != settingsSchemaVersion) return;
       if (!mounted) return;
       setState(() {
         final savedTarget = _targetFromName(data['target']);
@@ -532,13 +585,27 @@ class _LauncherScreenState extends State<LauncherScreen> {
     }
   }
 
-  Future<void> _saveSettings() async {
+  void _saveSettings() {
     final file = _settingsFile();
-    await file.parent.create(recursive: true);
-    const encoder = JsonEncoder.withIndent('  ');
-    await file.writeAsString(
-      '${encoder.convert({'target': _target.name, 'language': _language.name, 'display': _display, 'aspect': _aspect, 'pixels': _pixels, 'control': _control})}\n',
-    );
+    final temporary = File('${file.path}.tmp');
+    try {
+      file.parent.createSync(recursive: true);
+      const encoder = JsonEncoder.withIndent('  ');
+      temporary.writeAsStringSync(
+        '${encoder.convert({'schema_version': settingsSchemaVersion, 'target': _target.name, 'language': _language.name, 'display': _display, 'aspect': _aspect, 'pixels': _pixels, 'control': _control})}\n',
+        flush: true,
+      );
+      temporary.renameSync(file.path);
+    } on Object catch (error) {
+      if (temporary.existsSync()) temporary.deleteSync();
+      if (mounted) {
+        setState(() {
+          _status = _english
+              ? 'Could not save settings: $error'
+              : 'Einstellungen konnten nicht gespeichert werden: $error';
+        });
+      }
+    }
   }
 
   String? _allowed(Object? value, List<String> allowed) {
@@ -869,9 +936,86 @@ class _LauncherScreenState extends State<LauncherScreen> {
       builder: (context) => _AboutDialog(
         english: english,
         version: appVersion,
+        onDiagnostics: () {
+          Navigator.of(context).pop();
+          _showDiagnostics();
+        },
         onClose: () => Navigator.of(context).pop(),
       ),
     );
+  }
+
+  void _showDiagnostics() {
+    final root = _projectRoot();
+    final fsUae = _fsUaeExecutable(root);
+    final userData = _userDataRoot();
+    final logDir = Directory(
+      '${userData.path}${Platform.pathSeparator}output${Platform.pathSeparator}logs',
+    );
+    final report = <String>[
+      'Enemy: Tempest Reborn $appVersion',
+      'platform=${Platform.operatingSystem} ${Platform.operatingSystemVersion}',
+      'target=${_target.name}',
+      'language=${_language.name}',
+      'fs_uae=$fsUae',
+      'project_root=${root.path}',
+      'user_data=${userData.path}',
+      'runtime_config=${_lastRuntimeConfig ?? '-'}',
+      'process=${_activeProcess == null ? 'stopped' : 'running pid=${_activeProcess!.pid}'}',
+    ].join('\n');
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        backgroundColor: SiteColors.panel,
+        shape: const RoundedRectangleBorder(
+          side: BorderSide(color: SiteColors.enemyRed, width: 2),
+        ),
+        title: Text(_english ? 'Diagnostics' : 'Diagnose'),
+        content: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 680),
+          child: SelectableText(
+            report,
+            style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () async {
+              await Clipboard.setData(ClipboardData(text: report));
+            },
+            child: Text(_english ? 'Copy report' : 'Bericht kopieren'),
+          ),
+          TextButton(
+            onPressed: () => _openDirectory(logDir),
+            child: Text(_english ? 'Open log folder' : 'Logordner öffnen'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(_english ? 'Close' : 'Schließen'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openDirectory(Directory directory) async {
+    try {
+      await directory.create(recursive: true);
+      final command = Platform.isWindows
+          ? 'explorer'
+          : Platform.isMacOS
+          ? 'open'
+          : 'xdg-open';
+      await Process.start(command, [directory.path]);
+    } on Object catch (error) {
+      if (mounted) {
+        setState(() {
+          _status = _english
+              ? 'Could not open log folder: $error'
+              : 'Logordner konnte nicht geöffnet werden: $error';
+        });
+      }
+    }
   }
 
   @override
@@ -1127,11 +1271,13 @@ class _AboutDialog extends StatelessWidget {
   const _AboutDialog({
     required this.english,
     required this.version,
+    required this.onDiagnostics,
     required this.onClose,
   });
 
   final bool english;
   final String version;
+  final VoidCallback onDiagnostics;
   final VoidCallback onClose;
 
   @override
@@ -1191,6 +1337,16 @@ class _AboutDialog extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 8),
+                      IconButton(
+                        onPressed: onDiagnostics,
+                        tooltip: english ? 'Diagnostics' : 'Diagnose',
+                        icon: const Icon(Icons.troubleshoot),
+                        color: SiteColors.text,
+                        style: IconButton.styleFrom(
+                          minimumSize: const Size.square(44),
+                          shape: const RoundedRectangleBorder(),
+                        ),
+                      ),
                       IconButton(
                         onPressed: onClose,
                         tooltip: english ? 'Close' : 'Schließen',

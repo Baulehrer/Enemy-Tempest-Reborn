@@ -72,6 +72,16 @@ Launcher artwork under `launcher/assets/images/` is used for the menu, launch
 splash, and About dialog. The Enemy/Anachronia artwork is included for this
 package with the same project permission context as the Enemy ADFs above.
 
+The German and English videos under `launcher/assets/video/` are derived
+captures of the Enemy 1 intro running with a locally owned original Kickstart
+ROM. The ROM itself is not included. The videos contain only Enemy/Anachronia
+presentation material and are distributed under the same project permission
+context as the Enemy ADFs.
+
+The launcher uses `media_kit`, `media_kit_video`, and
+`media_kit_libs_video` for cross-platform playback. These packages are MIT
+licensed; their packaged notices remain part of the Flutter dependency output.
+
 ## Repository Scripts and Documentation
 
 The remaining scripts are for packaging and rebuilding the prepared ADF
@@ -83,3 +93,10 @@ This repository does not claim that AROS itself was patched. The successful
 workaround currently patches the Enemy `c/closewb` helper inside the Enemy ADF.
 The AROS ROMs are included so AROS developers can reproduce the behavior against
 the exact ROM binaries used in the tests.
+
+## Version 1.0 gate
+
+The remaining corresponding-source and written-permission requirements are
+tracked in `docs/THIRD_PARTY_SOURCE.md`. They are release blockers until the
+exact shipped artifacts have been reviewed; this file does not declare them
+complete merely because a development package can be built.

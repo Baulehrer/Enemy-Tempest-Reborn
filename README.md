@@ -1,6 +1,6 @@
 # Enemy: Tempest Reborn
 
-Version 0.8
+Version 0.9.5
 
 Enemy: Tempest Reborn is a simple launcher package for playing Enemy 1 and
 Enemy 2 through FS-UAE. The goal is to make the games easy to start, with a
@@ -15,7 +15,8 @@ clean menu, prepared settings, and a few graphics presets.
 - Enemy 1: Tempest of Violence
 - Enemy 2: Missing in Action
 - German and English game versions
-- Separate Enemy 1 intro launcher
+- Complete German and English Enemy 1 intro videos captured under original
+  Kickstart
 - Fullscreen-first setup
 - Prepared graphics presets:
   - Original
@@ -29,7 +30,8 @@ clean menu, prepared settings, and a few graphics presets.
 - Clean Amiga-side CLI splash instead of raw AROS boot text
 - Windows installer
 - Linux AppImage
-- Portable Linux, Windows, and macOS packages
+- Portable Linux and Windows packages
+- macOS preview package
 
 ## The Menu
 
@@ -37,7 +39,8 @@ The menu lets you choose the game, language, graphics preset, screen mode, and
 control style before starting FS-UAE.
 
 Enemy 1 starts directly at the game menu. The intro is available as its own
-menu entry, so the game can start quickly while the intro remains easy to watch.
+menu entry and plays the bundled original-Kickstart capture without starting
+FS-UAE. Any key or mouse click returns to the launcher.
 
 The graphics presets are meant as simple choices:
 
@@ -53,9 +56,9 @@ for a more original Amiga-like feel.
 
 ## Known Notes
 
-The Enemy 1 intro runs under AROS, but a few intro scenes are currently missing.
-The games themselves are packaged around the tested AROS/FS-UAE profiles and
-prepared ADF patches.
+The games are packaged around the tested AROS/FS-UAE profiles and prepared ADF
+patches. The bundled intro videos are derived captures; no Commodore Kickstart
+ROM is included.
 
 ## Release Pipeline
 

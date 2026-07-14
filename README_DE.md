@@ -1,6 +1,6 @@
 # Enemy: Tempest Reborn
 
-Version 0.8
+Version 0.9.5
 
 Enemy: Tempest Reborn ist ein einfaches Launcher-Paket, um Enemy 1 und Enemy 2
 ueber FS-UAE zu spielen. Ziel ist ein unkomplizierter Start mit klarem Menue,
@@ -15,7 +15,8 @@ vorbereiteten Einstellungen und einigen Grafik-Presets.
 - Enemy 1: Tempest of Violence
 - Enemy 2: Missing in Action
 - Deutsche und englische Spielversionen
-- Separater Enemy-1-Intro-Start
+- Vollstaendige deutsche und englische Enemy-1-Introvideos, aufgenommen unter
+  Original-Kickstart
 - Fullscreen als Standard
 - Vorbereitete Grafik-Presets:
   - Original
@@ -29,16 +30,17 @@ vorbereiteten Einstellungen und einigen Grafik-Presets.
 - Sauberer Amiga-CLI-Splash statt rohem AROS-Boottext
 - Windows-Installer
 - Linux-AppImage
-- Portable Pakete fuer Linux, Windows und macOS
+- Portable Pakete fuer Linux und Windows
+- macOS-Preview-Paket
 
 ## Das Menue
 
 Im Menue waehlst du Spiel, Sprache, Grafik-Preset, Bildschirmmodus und
 Steuerung, bevor FS-UAE gestartet wird.
 
-Enemy 1 startet direkt ins Spielmenue. Das Intro ist ein eigener Menuepunkt,
-damit der Spielstart schnell bleibt und das Intro trotzdem jederzeit verfuegbar
-ist.
+Enemy 1 startet direkt ins Spielmenue. Das Intro ist ein eigener Menuepunkt und
+spielt die mitgelieferte Original-Kickstart-Aufnahme ab, ohne FS-UAE zu starten.
+Eine beliebige Taste oder ein Mausklick fuehrt zurueck zum Launcher.
 
 Die Grafik-Presets sind bewusst einfach gehalten:
 
@@ -54,9 +56,9 @@ naeher am klassischen Amiga-Spielgefuehl.
 
 ## Bekannte Hinweise
 
-Das Enemy-1-Intro laeuft unter AROS, aber einige Intro-Szenen fehlen aktuell.
 Die Spiele selbst sind um die getesteten AROS-/FS-UAE-Profile und vorbereiteten
-ADF-Patches herum paketiert.
+ADF-Patches herum paketiert. Die Introvideos sind abgeleitete Aufnahmen; ein
+Commodore-Kickstart-ROM wird nicht mitgeliefert.
 
 ## Release-Pipeline
 

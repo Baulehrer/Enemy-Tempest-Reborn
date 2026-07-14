@@ -69,11 +69,32 @@ void main() {
 
     await tester.tap(find.text('EN'));
     await tester.pumpAndSettle();
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 50)),
+    );
 
     expect(find.text('START GAME'), findsOneWidget);
     expect(find.text('SETTINGS'), findsOneWidget);
     expect(find.byTooltip('Level maps'), findsOneWidget);
     expect(find.byTooltip('About'), findsOneWidget);
+  });
+
+  testWidgets('intro is presented as an original Kickstart video', (
+    tester,
+  ) async {
+    await tester.binding.setSurfaceSize(const Size(1024, 768));
+    await tester.pumpWidget(app);
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.widgetWithText(OutlinedButton, 'INTRO'));
+    await tester.pumpAndSettle();
+
+    expect(
+      find.text('Videoaufnahme unter Original-Kickstart.'),
+      findsOneWidget,
+    );
+    expect(find.text('INTRO STARTEN'), findsOneWidget);
+    expect(find.textContaining('Szenen fehlen'), findsNothing);
   });
 
   testWidgets('about remains available with release information', (
@@ -87,7 +108,7 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('ENEMY: TEMPEST REBORN'), findsAtLeastNWidgets(1));
-    expect(find.text('V0.8'), findsOneWidget);
+    expect(find.text('V0.9.5'), findsOneWidget);
     expect(find.text('André Wüthrich'), findsOneWidget);
     expect(find.text('Stephan Kaufmann'), findsOneWidget);
     expect(
@@ -101,6 +122,48 @@ void main() {
       ),
       findsOneWidget,
     );
+  });
+
+  testWidgets(
+    'diagnostics expose technical details away from the main screen',
+    (tester) async {
+      await tester.binding.setSurfaceSize(const Size(1280, 800));
+      await tester.pumpWidget(app);
+      await tester.pumpAndSettle();
+
+      expect(find.textContaining('project_root='), findsNothing);
+      await tester.tap(find.byTooltip('Info'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byTooltip('Diagnose'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Diagnose'), findsOneWidget);
+      expect(
+        find.textContaining('Enemy: Tempest Reborn 0.9.5'),
+        findsOneWidget,
+      );
+      expect(find.textContaining('project_root='), findsOneWidget);
+      expect(find.text('Bericht kopieren'), findsOneWidget);
+      expect(find.text('Logordner öffnen'), findsOneWidget);
+    },
+  );
+
+  testWidgets('saved settings carry a schema version', (tester) async {
+    const settingsPath = '/tmp/enemy-tempest-reborn-settings-schema-test';
+    final settings = File('$settingsPath/settings.json');
+    if (settings.existsSync()) settings.deleteSync();
+    await tester.binding.setSurfaceSize(const Size(1024, 768));
+    await tester.pumpWidget(
+      const TempestRebornLauncher(userDataPath: settingsPath),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('EN'));
+    await tester.pumpAndSettle();
+
+    expect(settings.existsSync(), isTrue);
+    expect(settings.readAsStringSync(), contains('"schema_version": 1'));
+    expect(settings.readAsStringSync(), contains('"language": "en"'));
   });
 
   for (final size in const [

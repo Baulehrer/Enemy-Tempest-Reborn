@@ -8,14 +8,14 @@ data directory, not into the installed package.
 ## Local Linux build
 
 ```bash
-VERSION=v0.6.1 ./scripts/package_linux_x64.sh
+VERSION=v0.9.5 ./scripts/package_linux_x64.sh
 ```
 
 If `FS_UAE_BUNDLE_BIN` points to an executable FS-UAE binary, the package
 includes it as `bin/fs-uae/fs-uae`.
 
 ```bash
-VERSION=v0.6.1 \
+VERSION=v0.9.5 \
 FS_UAE_BUNDLE_BIN="$(command -v fs-uae)" \
 ./scripts/package_linux_x64.sh
 ```
@@ -28,7 +28,7 @@ Output:
 To also create a Linux AppImage, install `appimagetool` and run:
 
 ```bash
-VERSION=v0.6.1 \
+VERSION=v0.9.5 \
 FS_UAE_BUNDLE_BIN="$(command -v fs-uae)" \
 APPIMAGETOOL=appimagetool \
 ./scripts/package_linux_appimage.sh
@@ -44,7 +44,7 @@ Additional output:
 Windows packages must be built on Windows:
 
 ```powershell
-.\scripts\package_windows_x64.ps1 -Version v0.6.1
+.\scripts\package_windows_x64.ps1 -Version v0.9.5
 ```
 
 If an FS-UAE binary is supplied, it is copied to
@@ -52,7 +52,7 @@ If an FS-UAE binary is supplied, it is copied to
 
 ```powershell
 .\scripts\package_windows_x64.ps1 `
-  -Version v0.6.1 `
+  -Version v0.9.5 `
   -FsUaeBundleBin "C:\Program Files\FS-UAE\fs-uae.exe"
 ```
 
@@ -65,7 +65,7 @@ To create the Inno Setup installer as well, install Inno Setup 6 and run:
 
 ```powershell
 .\scripts\package_windows_installer.ps1 `
-  -Version v0.6.1 `
+  -Version v0.9.5 `
   -FsUaeBundleBin "C:\Program Files\FS-UAE\fs-uae.exe"
 ```
 
@@ -79,7 +79,7 @@ Additional output:
 macOS packages must be built on macOS:
 
 ```bash
-VERSION=v0.6.1 ./scripts/package_macos_universal.sh
+VERSION=v0.9.5 ./scripts/package_macos_universal.sh
 ```
 
 If `FS_UAE_BUNDLE_BIN` points to an executable FS-UAE binary, the package
@@ -87,8 +87,12 @@ includes it as `bin/fs-uae/fs-uae`.
 
 Output:
 
-- `dist/Enemy-Tempest-Reborn-<version>-macos-universal.zip`
-- `dist/Enemy-Tempest-Reborn-<version>-macos-universal.zip.sha256`
+- `dist/Enemy-Tempest-Reborn-<version>-macos-preview.zip`
+- `dist/Enemy-Tempest-Reborn-<version>-macos-preview.zip.sha256`
+
+The macOS package remains a preview until both the launcher and bundled FS-UAE
+pass native Intel and Apple Silicon runtime gates. A build made on one runner is
+not labelled `universal` without that proof.
 
 ## GitHub Actions
 
@@ -107,3 +111,6 @@ separate emulator install.
 Linux `.tar.gz` can be built and smoke-tested locally from this repository.
 Linux AppImage requires `appimagetool`. Windows and macOS artifacts require
 their native build hosts or the GitHub workflow.
+
+Every staged package contains `PACKAGE_CONTENTS.sha256`, covering all shipped
+files before archive creation.

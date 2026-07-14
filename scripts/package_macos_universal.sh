@@ -2,8 +2,8 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${VERSION:-v0.8}"
-PKG="Enemy-Tempest-Reborn-${VERSION}-macos-universal"
+source "$ROOT/scripts/version.sh"
+PKG="Enemy-Tempest-Reborn-${VERSION}-macos-preview"
 OUT_DIR="${OUT_DIR:-${ROOT}/dist}"
 STAGE="${OUT_DIR}/${PKG}"
 ARCHIVE="${OUT_DIR}/${PKG}.zip"
@@ -57,6 +57,7 @@ EOF
   {
     echo "Bundled FS-UAE binary"
     echo "source_path=$FS_UAE_BUNDLE_BIN"
+    echo "sha256=$(shasum -a 256 "$FS_UAE_BUNDLE_BIN" | cut -d' ' -f1)"
     "$FS_UAE_BUNDLE_BIN" --version 2>/dev/null | sed 's/^/version=/'
   } >"$STAGE/bin/fs-uae/BUNDLE_INFO.txt"
 fi
@@ -79,6 +80,13 @@ Start:
 If bin/fs-uae/fs-uae is present, the launcher uses that bundled emulator.
 Runtime files are written to the user's application data directory.
 EOF
+
+(
+  cd "$STAGE"
+  find . -type f ! -name PACKAGE_CONTENTS.sha256 -print0 \
+    | sort -z \
+    | xargs -0 shasum -a 256 >PACKAGE_CONTENTS.sha256
+)
 
 (
   cd "$OUT_DIR"

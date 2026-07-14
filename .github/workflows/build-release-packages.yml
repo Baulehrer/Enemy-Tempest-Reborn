@@ -4,28 +4,51 @@ permissions:
   contents: write
 
 on:
+  pull_request:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
   workflow_dispatch:
     inputs:
       version:
         description: Release/package version
         required: false
-        default: v0.7.1
-  push:
-    tags:
-      - "v*"
+        default: v0.9.5
 
 jobs:
-  linux:
+  quality:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.44.6
+      - name: Validate repository
+        run: bash scripts/validate_repository.sh
+      - name: Check shell syntax
+        run: bash -n scripts/*.sh
+      - name: Analyze launcher
+        working-directory: launcher
+        run: flutter analyze
+      - name: Test launcher
+        working-directory: launcher
+        run: flutter test
+
+  linux:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: quality
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.44.6
       - name: Install Linux build dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev rsync
+          sudo apt-get install -y clang cmake ninja-build pkg-config libgtk-3-dev libmpv-dev libepoxy-dev rsync
           sudo apt-get install -y fuse libfuse2
           sudo apt-get install -y fs-uae || true
       - name: Install appimagetool
@@ -37,12 +60,13 @@ jobs:
         shell: bash
         run: |
           version="${{ github.event.inputs.version }}"
-          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.7.1}"; fi
+          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.9.5}"; fi
           fs_uae="$(command -v fs-uae || true)"
           if [ -n "$fs_uae" ]; then
             VERSION="$version" FS_UAE_BUNDLE_BIN="$fs_uae" APPIMAGETOOL="$PWD/appimagetool-x86_64.AppImage" ./scripts/package_linux_appimage.sh
           else
-            VERSION="$version" APPIMAGETOOL="$PWD/appimagetool-x86_64.AppImage" ./scripts/package_linux_appimage.sh
+            echo "FS-UAE is required for Linux release artifacts" >&2
+            exit 1
           fi
       - uses: actions/upload-artifact@v4
         with:
@@ -54,12 +78,14 @@ jobs:
             dist/*linux-x64.AppImage.sha256
 
   windows:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: quality
     runs-on: windows-2022
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.44.6
       - name: Try install FS-UAE
         shell: pwsh
         run: |
@@ -74,7 +100,7 @@ jobs:
         run: |
           $version = "${{ github.event.inputs.version }}"
           if ([string]::IsNullOrWhiteSpace($version)) { $version = "${env:GITHUB_REF_NAME}" }
-          if ([string]::IsNullOrWhiteSpace($version)) { $version = "v0.7.1" }
+          if ([string]::IsNullOrWhiteSpace($version)) { $version = "v0.9.5" }
           $fsUae = Get-Command "fs-uae.exe" -ErrorAction SilentlyContinue
           if (-not $fsUae) {
             $candidatePaths = @(
@@ -110,12 +136,14 @@ jobs:
             dist/*windows-x64-setup.exe.sha256
 
   macos:
+    if: github.event_name == 'workflow_dispatch' || startsWith(github.ref, 'refs/tags/v')
+    needs: quality
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          channel: stable
+          flutter-version: 3.44.6
       - name: Try install FS-UAE
         run: |
           brew install --cask fs-uae || true
@@ -123,7 +151,7 @@ jobs:
         shell: bash
         run: |
           version="${{ github.event.inputs.version }}"
-          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.7.1}"; fi
+          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.9.5}"; fi
           fs_uae=""
           for candidate in \
             "/Applications/FS-UAE.app/Contents/MacOS/fs-uae" \
@@ -144,12 +172,13 @@ jobs:
         with:
           name: enemy-tempest-reborn-macos
           path: |
-            dist/*macos-universal.zip
-            dist/*macos-universal.zip.sha256
+            dist/*macos-preview.zip
+            dist/*macos-preview.zip.sha256
 
   release:
     runs-on: ubuntu-24.04
     needs:
+      - quality
       - linux
       - windows
       - macos
@@ -166,7 +195,7 @@ jobs:
           GH_REPO: ${{ github.repository }}
         run: |
           version="${{ github.event.inputs.version }}"
-          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.7.1}"; fi
+          if [ -z "$version" ]; then version="${GITHUB_REF_NAME:-v0.9.5}"; fi
           if gh release view "$version" >/dev/null 2>&1; then
             gh release upload "$version" release-assets/* --clobber
           else

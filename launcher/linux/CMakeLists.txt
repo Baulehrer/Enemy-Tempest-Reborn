@@ -48,6 +48,9 @@ endfunction()
 
 # Flutter library and tool build rules.
 set(FLUTTER_MANAGED_DIR "${CMAKE_CURRENT_SOURCE_DIR}/flutter")
+# media_kit can optionally build a private mimalloc copy. Reborn does not link
+# that allocator, so skip the plugin's unnecessary static download/build step.
+set(MIMALLOC_USE_STATIC_LIBS OFF)
 add_subdirectory(${FLUTTER_MANAGED_DIR})
 
 # System-level dependencies.

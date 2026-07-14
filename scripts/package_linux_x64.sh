@@ -2,7 +2,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-VERSION="${VERSION:-v0.8}"
+source "$ROOT/scripts/version.sh"
 PKG="Enemy-Tempest-Reborn-${VERSION}-linux-x64"
 OUT_DIR="${OUT_DIR:-${ROOT}/dist}"
 STAGE="${OUT_DIR}/${PKG}"
@@ -49,6 +49,7 @@ if [ -n "$FS_UAE_BUNDLE_BIN" ]; then
   {
     echo "Bundled FS-UAE binary"
     echo "source_path=$FS_UAE_BUNDLE_BIN"
+    echo "sha256=$(sha256sum "$FS_UAE_BUNDLE_BIN" | cut -d' ' -f1)"
     "$FS_UAE_BUNDLE_BIN" --version 2>/dev/null | sed 's/^/version=/'
   } >"$STAGE/bin/fs-uae/BUNDLE_INFO.txt"
 fi
@@ -71,6 +72,17 @@ Start:
 If bin/fs-uae/fs-uae is present, the launcher uses that bundled emulator.
 Runtime files are written to the user's application data directory.
 EOF
+
+(
+  cd "$STAGE"
+  find . -type f ! -name PACKAGE_CONTENTS.sha256 -print0 \
+    | sort -z \
+    | xargs -0 sha256sum >PACKAGE_CONTENTS.sha256
+)
+
+if [ -n "$FS_UAE_BUNDLE_BIN" ]; then
+  bash "$ROOT/scripts/validate_linux_package.sh" "$STAGE"
+fi
 
 tar -C "$OUT_DIR" -czf "$ARCHIVE" "$PKG"
 (

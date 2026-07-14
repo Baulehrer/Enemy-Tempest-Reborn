@@ -1,5 +1,5 @@
 param(
-  [string]$Version = $(if ($env:VERSION) { $env:VERSION } else { "v0.8" }),
+  [string]$Version = $(if ($env:VERSION) { $env:VERSION } else { "" }),
   [string]$OutDir = $(if ($env:OUT_DIR) { $env:OUT_DIR } else { "" }),
   [string]$FsUaeBundleBin = $(if ($env:FS_UAE_BUNDLE_BIN) { $env:FS_UAE_BUNDLE_BIN } else { "" }),
   [string]$Iscc = $(if ($env:ISCC) { $env:ISCC } else { "" })
@@ -8,6 +8,13 @@ param(
 $ErrorActionPreference = "Stop"
 
 $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
+if ([string]::IsNullOrWhiteSpace($Version)) {
+  $VersionSource = Get-Content (Join-Path $Root "launcher/lib/app_version.dart") -Raw
+  if ($VersionSource -notmatch "const appVersion = '([^']+)';") {
+    throw "Could not read launcher version"
+  }
+  $Version = "v$($Matches[1])"
+}
 if ([string]::IsNullOrWhiteSpace($OutDir)) {
   $OutDir = Join-Path $Root "dist"
 }
